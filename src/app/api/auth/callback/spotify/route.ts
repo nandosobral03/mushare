@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
+import { db } from "@/server/db";
+import { NextResponse, type NextRequest } from "next/server";
+import { refreshAccessToken } from "@/lib/spotify";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
 
@@ -30,12 +31,40 @@ export async function GET(request: Request) {
 
     const data = await tokenResponse.json();
 
+    if (!data.access_token) {
+      const refresh_token = request.cookies.get("spotify_refresh_token")?.value;
+
+      if (refresh_token) {
+        const refreshedTokens = await refreshAccessToken(refresh_token);
+        data.access_token = refreshedTokens.access_token;
+        data.expires_in = refreshedTokens.expires_in;
+
+        if (refreshedTokens.refresh_token) {
+          data.refresh_token = refreshedTokens.refresh_token;
+        }
+      } else {
+        return NextResponse.json(
+          { error: "Failed to get access token" },
+          { status: 401 },
+        );
+      }
+    }
+
     const response = NextResponse.redirect(new URL("/grid", request.url));
+
+    const expiresAt = Date.now() + data.expires_in * 1000;
+
     response.cookies.set("spotify_access_token", data.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: data.expires_in,
+    });
+
+    response.cookies.set("spotify_token_expires_at", expiresAt.toString(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
     });
 
     if (data.refresh_token) {
@@ -45,6 +74,37 @@ export async function GET(request: Request) {
         sameSite: "lax",
       });
     }
+
+    const userResponse = await fetch("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${data.access_token}`,
+      },
+    });
+
+    const userData: {
+      id: string;
+      email: string;
+      display_name: string;
+      images?: {
+        url: string;
+      }[];
+    } = await userResponse.json();
+
+    await db.spotifyUser.upsert({
+      where: { spotifyId: userData.id },
+      update: {
+        email: userData.email,
+        name: userData.display_name,
+        image: userData.images?.[0]?.url,
+      },
+      create: {
+        spotifyId: userData.id,
+        email: userData.email,
+        name: userData.display_name,
+        image: userData.images?.[0]?.url,
+      },
+    });
+
     return response;
   } catch (error) {
     return NextResponse.json(

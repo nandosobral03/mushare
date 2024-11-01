@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-
 import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
@@ -15,15 +14,22 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="flex flex-col gap-2 p-4">
-      <Link href="/grid" className="flex items-center gap-2">
-        <span className={getNavItemClass("/grid")}>apps</span>
-      </Link>
-      <Link href="/settings" className="flex items-center gap-2">
-        <span className={getNavItemClass("/settings")}>view_list</span>
-      </Link>
-      <Link href="/users" className="flex items-center gap-2">
-        <span className={getNavItemClass("/users")}>person</span>
+    <nav className="flex h-full flex-col justify-between p-4">
+      <div className="flex flex-col gap-2">
+        <Link href="/grid" className="flex items-center gap-2">
+          <span className={getNavItemClass("/grid")}>apps</span>
+        </Link>
+        <Link href="/settings" className="flex items-center gap-2">
+          <span className={getNavItemClass("/settings")}>view_list</span>
+        </Link>
+        <Link href="/users" className="flex items-center gap-2">
+          <span className={getNavItemClass("/users")}>person</span>
+        </Link>
+      </div>
+      <Link href="/api/auth/signout" className="flex items-center gap-2">
+        <span className="material-symbols-outlined rounded-xl p-2 text-black transition-colors hover:bg-black hover:text-white">
+          logout
+        </span>
       </Link>
     </nav>
   );
