@@ -1,10 +1,11 @@
+import { createTRPCRouter, spotifyProtectedProcedure } from "@/server/api/trpc";
 import {
-  createTRPCRouter,
-  publicProcedure,
-  spotifyProtectedProcedure,
-} from "@/server/api/trpc";
-import { getUserId, searchSpotifyAlbums } from "@/lib/spotify";
+  createSpotifyPlaylistFromAlbums,
+  getUserId,
+  searchSpotifyAlbums,
+} from "@/lib/spotify";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const spotifyRouter = createTRPCRouter({
   searchAlbums: spotifyProtectedProcedure
@@ -89,5 +90,58 @@ export const spotifyRouter = createTRPCRouter({
           title: input.title,
         },
       });
+    }),
+  getGrid: spotifyProtectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const grid = await ctx.db.grid.findUnique({
+        where: { id: input.id },
+        include: {
+          albums: true,
+        },
+      });
+
+      if (!grid) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Grid not found",
+        });
+      }
+
+      return grid;
+    }),
+  getUserGrids: spotifyProtectedProcedure.query(async ({ ctx }) => {
+    const userId = await getUserId(ctx.spotifyAccessToken);
+    return await ctx.db.grid.findMany({
+      where: { spotifyUserId: userId },
+    });
+  }),
+  createPlaylistFromGrid: spotifyProtectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const grid = await ctx.db.grid.findUnique({
+        where: { id: input.id },
+        include: {
+          albums: true,
+          spotifyUser: true,
+        },
+      });
+
+      if (!grid) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Grid not found",
+        });
+      }
+
+      return await createSpotifyPlaylistFromAlbums(
+        grid.albums.map((album) => album.spotifyId),
+        `Mushare ${grid.size}x${grid.size} - ${grid.title} by ${grid.spotifyUser.name}`,
+        `Playlist created by Mushare based on the grid "${grid.title}", grid can be found at https://mushare.app/grid/${grid.id}`,
+      );
     }),
 });

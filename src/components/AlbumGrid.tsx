@@ -7,7 +7,7 @@ import { AlbumSelector } from "./AlbumSelector";
 type AlbumGridProps = {
   size: number;
   selectedAlbums: (Album | null)[];
-  onAlbumSelect: (album: Album | null, position: number) => void;
+  onAlbumSelect?: (album: Album | null, position: number) => void;
   readonly?: boolean;
 };
 
@@ -20,15 +20,15 @@ export const AlbumGrid = ({
   const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
   const gridCells = Array.from({ length: size * size }, (_, i) => i);
 
-  if (readonly) return;
-
   return (
     <>
       <div
         className="mx-auto grid aspect-square w-full gap-4"
         style={{
           gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
-          maxWidth: "min(calc(100vh - 32rem), calc(100vw - 32rem))",
+          maxWidth: readonly
+            ? undefined
+            : "min(calc(100vh - 32rem), calc(100vw - 32rem))",
         }}
       >
         {gridCells.map((position) => (
@@ -36,26 +36,30 @@ export const AlbumGrid = ({
             key={position}
             album={selectedAlbums[position] ?? undefined}
             onSelect={() => {
+              if (readonly) return;
               if (selectedAlbums[position]) {
-                onAlbumSelect(null, position);
+                onAlbumSelect?.(null, position);
               } else {
                 setSelectedPosition(position);
               }
             }}
+            readonly={readonly}
           />
         ))}
       </div>
 
-      <AlbumSelector
-        isOpen={selectedPosition !== null}
-        onClose={() => setSelectedPosition(null)}
-        onSelect={(album) => {
-          if (selectedPosition !== null) {
-            onAlbumSelect(album, selectedPosition);
-            setSelectedPosition(null);
-          }
-        }}
-      />
+      {!readonly && (
+        <AlbumSelector
+          isOpen={selectedPosition !== null}
+          onClose={() => setSelectedPosition(null)}
+          onSelect={(album) => {
+            if (selectedPosition !== null) {
+              onAlbumSelect?.(album, selectedPosition);
+              setSelectedPosition(null);
+            }
+          }}
+        />
+      )}
     </>
   );
 };
@@ -63,12 +67,17 @@ export const AlbumGrid = ({
 type AlbumCellProps = {
   album?: Album;
   onSelect: () => void;
+  readonly?: boolean;
 };
 
-const AlbumCell = ({ album, onSelect }: AlbumCellProps) => (
+const AlbumCell = ({ album, onSelect, readonly }: AlbumCellProps) => (
   <div
     onClick={onSelect}
-    className="aspect-square cursor-pointer overflow-hidden rounded-lg border text-spotify transition-colors hover:bg-spotify-800 hover:text-white"
+    className={`aspect-square overflow-hidden rounded-lg border text-spotify transition-colors ${
+      readonly
+        ? "cursor-default"
+        : "cursor-pointer hover:bg-spotify-800 hover:text-white"
+    }`}
   >
     {album ? (
       <img

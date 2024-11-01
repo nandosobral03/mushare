@@ -9,16 +9,23 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const GridPage = () => {
   const [gridSize, setGridSize] = useState(3);
   const [selectedAlbums, setSelectedAlbums] = useState<(Album | null)[]>([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const router = useRouter();
 
   const createGrid = api.spotify.createGrid.useMutation({
-    onSuccess: () => {
+    onSuccess: (grid) => {
       setShowSaveDialog(false);
-      toast.success("Grid saved successfully!");
+      toast.success("Grid saved successfully!", {
+        action: {
+          label: "View Grid",
+          onClick: () => router.push(`/grid/${grid.id}`),
+        },
+      });
     },
     onError: (error) => {
       toast.error("Failed to create grid", {

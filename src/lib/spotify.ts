@@ -1,25 +1,26 @@
 import { cookies } from "next/headers";
 import type { Album } from "@/types/album";
+import axios from "axios";
 
 const SPOTIFY_API_URL = "https://api.spotify.com/v1";
 
 const refreshAccessToken = async (refresh_token: string) => {
   try {
-    const response = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
-        ).toString("base64")}`,
-      },
-      body: new URLSearchParams({
+    const { data } = await axios.post(
+      "https://accounts.spotify.com/api/token",
+      new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: refresh_token,
       }),
-    });
-
-    const data = await response.json();
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${Buffer.from(
+            `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
+          ).toString("base64")}`,
+        },
+      },
+    );
     return data;
   } catch (error) {
     console.error("Error refreshing access token:", error);
@@ -63,7 +64,7 @@ const getAccessToken = async () => {
 export const searchSpotifyAlbums = async (query: string): Promise<Album[]> => {
   const accessToken = await getAccessToken();
 
-  const response = await fetch(
+  const { data } = await axios.get(
     `${SPOTIFY_API_URL}/search?q=${encodeURIComponent(query)}&type=album&limit=10`,
     {
       headers: {
@@ -71,12 +72,6 @@ export const searchSpotifyAlbums = async (query: string): Promise<Album[]> => {
       },
     },
   );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch albums");
-  }
-
-  const data = await response.json();
 
   return data.albums.items.map((item: any) => ({
     id: item.id,
@@ -87,18 +82,68 @@ export const searchSpotifyAlbums = async (query: string): Promise<Album[]> => {
 };
 
 const getUserId = async (accessToken: string) => {
-  const userResponse = await fetch("https://api.spotify.com/v1/me", {
+  const { data } = await axios.get("https://api.spotify.com/v1/me", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
-  if (!userResponse.ok) {
-    throw new Error("Failed to fetch user data");
-  }
-
-  const userData = await userResponse.json();
-  return userData.id;
+  return data.id;
 };
 
-export { refreshAccessToken, getUserId };
+const createSpotifyPlaylistFromAlbums = async (
+  albumIds: string[],
+  name: string,
+  description: string,
+) => {
+  const accessToken = await getAccessToken();
+  if (!accessToken) {
+    throw new Error("No access token found");
+  }
+  const userId = await getUserId(accessToken);
+
+  // Create the playlist
+  const { data } = await axios.post(
+    `${SPOTIFY_API_URL}/users/${userId}/playlists`,
+    {
+      name,
+      description,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  // Add the albums to the playlist
+  const tracks = await Promise.all(
+    albumIds.map(async (id) => {
+      const { data } = await axios.get(
+        `${SPOTIFY_API_URL}/albums/${id}/tracks`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      return data.items.map((track: any) => ({
+        uri: track.uri,
+      }));
+    }),
+  ).then((trackArrays) => trackArrays.flat());
+
+  await axios.post(
+    `${SPOTIFY_API_URL}/playlists/${data.id}/tracks`,
+    {
+      uris: tracks.map((track) => track.uri),
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+};
+
+export { refreshAccessToken, getUserId, createSpotifyPlaylistFromAlbums };
