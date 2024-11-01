@@ -2,7 +2,6 @@
 
 import { getErrorMessage } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
@@ -13,32 +12,22 @@ type AddGridAsPlaylistButtonProps = {
 export const AddGridAsPlaylistButton = ({
   id,
 }: AddGridAsPlaylistButtonProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const createPlaylist = api.spotify.createPlaylistFromGrid.useMutation();
-
-  const handleClick = async () => {
-    try {
-      setIsLoading(true);
-      await createPlaylist.mutateAsync({
-        id,
-      });
-      toast.success("Playlist created successfully!");
-    } catch (error) {
+  const { mutate, isPending } = api.spotify.createPlaylistFromGrid.useMutation({
+    onSuccess: () => toast.success("Playlist created successfully!"),
+    onError: (error) => {
       toast.error(getErrorMessage(error));
       console.error("Failed to create playlist:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+  });
 
   return (
     <Button
-      onClick={handleClick}
-      disabled={isLoading}
+      onClick={() => mutate({ id })}
+      disabled={isPending}
       className="w-full max-w-sm"
       size="lg"
     >
-      {isLoading ? "Creating playlist..." : "Add Grid as Playlist"}
+      {isPending ? "Creating playlist..." : "Add Grid as Playlist"}
     </Button>
   );
 };
