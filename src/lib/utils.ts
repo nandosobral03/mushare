@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
 import { TRPCClientError } from "@trpc/client";
 
@@ -16,7 +15,8 @@ export const getErrorMessage = (error: unknown): string => {
   }
 
   if (error instanceof TRPCClientError) {
-    return JSON.parse(error.message)[0]?.message ?? "Error occurred";
+    const parsedError = JSON.parse(error.message) as { message: string }[];
+    return parsedError[0]?.message ?? "Error occurred";
   }
 
   if (typeof error === "string") {
@@ -24,7 +24,8 @@ export const getErrorMessage = (error: unknown): string => {
   }
 
   if (Array.isArray(error)) {
-    return error[0]?.message ?? "Error occurred";
+    const parsedError = error as { message: string }[];
+    return parsedError[0]?.message ?? "Error occurred";
   }
 
   if (error && typeof error === "object") {
@@ -33,7 +34,8 @@ export const getErrorMessage = (error: unknown): string => {
       return errorObj.message;
     }
     if (Array.isArray(errorObj.message)) {
-      return errorObj.message[0]?.message ?? "Error occurred";
+      const parsedError = errorObj.message as { message: string }[];
+      return parsedError[0]?.message ?? "Error occurred";
     }
   }
 

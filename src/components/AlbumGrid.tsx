@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Album } from "@/types/album";
+import { type Album } from "@/types/album";
 import { AlbumSelector } from "./AlbumSelector";
 
 type AlbumGridProps = {
@@ -82,6 +82,7 @@ const AlbumCell = ({ album, onSelect, readonly }: AlbumCellProps) => (
     }`}
   >
     {album ? (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={album.imageUrl}
         alt={`${album.name} by ${album.artist}`}

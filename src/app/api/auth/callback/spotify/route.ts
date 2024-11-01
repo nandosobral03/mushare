@@ -1,6 +1,22 @@
 import { db } from "@/server/db";
 import { NextResponse, type NextRequest } from "next/server";
 import { refreshAccessToken } from "@/lib/spotify";
+import axios from "axios";
+
+interface SpotifyTokenResponse {
+  access_token: string;
+  refresh_token?: string;
+  expires_in: number;
+}
+
+interface SpotifyUserResponse {
+  id: string;
+  email: string;
+  display_name: string;
+  images?: {
+    url: string;
+  }[];
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -11,25 +27,22 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const tokenResponse = await fetch(
+    const { data } = await axios.post<SpotifyTokenResponse>(
       "https://accounts.spotify.com/api/token",
+      new URLSearchParams({
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: process.env.SPOTIFY_REDIRECT_URI!,
+      }),
       {
-        method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Authorization: `Basic ${Buffer.from(
             `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
           ).toString("base64")}`,
         },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          code,
-          redirect_uri: process.env.SPOTIFY_REDIRECT_URI!,
-        }),
       },
     );
-
-    const data = await tokenResponse.json();
 
     if (!data.access_token) {
       const refresh_token = request.cookies.get("spotify_refresh_token")?.value;
@@ -75,20 +88,14 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const userResponse = await fetch("https://api.spotify.com/v1/me", {
-      headers: {
-        Authorization: `Bearer ${data.access_token}`,
+    const { data: userData } = await axios.get<SpotifyUserResponse>(
+      "https://api.spotify.com/v1/me",
+      {
+        headers: {
+          Authorization: `Bearer ${data.access_token}`,
+        },
       },
-    });
-
-    const userData: {
-      id: string;
-      email: string;
-      display_name: string;
-      images?: {
-        url: string;
-      }[];
-    } = await userResponse.json();
+    );
 
     await db.spotifyUser.upsert({
       where: { spotifyId: userData.id },
@@ -106,7 +113,7 @@ export async function GET(request: NextRequest) {
     });
 
     return response;
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to exchange code for token" },
       { status: 500 },

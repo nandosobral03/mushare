@@ -17,10 +17,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <TRPCReactProvider>
-        <Toaster />
-        {children}
-      </TRPCReactProvider>
+      <body>
+        <TRPCReactProvider>
+          <Toaster />
+          {children}
+        </TRPCReactProvider>
+      </body>
     </html>
   );
 }

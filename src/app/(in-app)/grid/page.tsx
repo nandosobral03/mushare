@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AlbumGrid } from "@/components/AlbumGrid";
 import { SelectedAlbums } from "@/components/SelectedAlbums";
 import SaveGridDialog from "@/components/SaveGridDialog";
-import { Album } from "@/types/album";
+import { type Album } from "@/types/album";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";

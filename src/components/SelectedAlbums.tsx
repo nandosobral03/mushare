@@ -1,4 +1,4 @@
-import { Album } from "@/types/album";
+import { type Album } from "@/types/album";
 
 type SelectedAlbumsProps = {
   albums: ((Album & { index: number }) | null)[];
@@ -10,6 +10,7 @@ export const SelectedAlbums = ({ albums }: SelectedAlbumsProps) => (
     <div className="space-y-4">
       {albums.map((album, index) => (
         <div key={index} className="flex gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={album?.imageUrl ?? "/default-album-artwork.png"}
             alt={album?.name ?? "Empty album slot"}

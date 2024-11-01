@@ -6,7 +6,11 @@ const SPOTIFY_API_URL = "https://api.spotify.com/v1";
 
 const refreshAccessToken = async (refresh_token: string) => {
   try {
-    const { data } = await axios.post(
+    const { data } = await axios.post<{
+      access_token: string;
+      expires_in: number;
+      refresh_token: string;
+    }>(
       "https://accounts.spotify.com/api/token",
       new URLSearchParams({
         grant_type: "refresh_token",
@@ -61,10 +65,25 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
+interface SpotifySearchResponse {
+  albums: {
+    items: Array<{
+      id: string;
+      name: string;
+      artists: Array<{
+        name: string;
+      }>;
+      images: Array<{
+        url: string;
+      }>;
+    }>;
+  };
+}
+
 export const searchSpotifyAlbums = async (query: string): Promise<Album[]> => {
   const accessToken = await getAccessToken();
 
-  const { data } = await axios.get(
+  const { data } = await axios.get<SpotifySearchResponse>(
     `${SPOTIFY_API_URL}/search?q=${encodeURIComponent(query)}&type=album&limit=10`,
     {
       headers: {
@@ -73,23 +92,36 @@ export const searchSpotifyAlbums = async (query: string): Promise<Album[]> => {
     },
   );
 
-  return data.albums.items.map((item: any) => ({
+  return data.albums.items.map((item) => ({
     id: item.id,
     name: item.name,
-    artist: item.artists[0].name,
-    imageUrl: item.images[0].url,
+    artist: item.artists[0]?.name ?? "",
+    imageUrl: item.images[0]?.url ?? "",
   }));
 };
 
-const getUserId = async (accessToken: string) => {
-  const { data } = await axios.get("https://api.spotify.com/v1/me", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+const getUserId = async (accessToken: string): Promise<string> => {
+  const { data } = await axios.get<{ id: string }>(
+    "https://api.spotify.com/v1/me",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+  );
 
   return data.id;
 };
+
+interface SpotifyPlaylistResponse {
+  id: string;
+}
+
+interface SpotifyTrackResponse {
+  items: Array<{
+    uri: string;
+  }>;
+}
 
 const createSpotifyPlaylistFromAlbums = async (
   albumIds: string[],
@@ -103,7 +135,7 @@ const createSpotifyPlaylistFromAlbums = async (
   const userId = await getUserId(accessToken);
 
   // Create the playlist
-  const { data } = await axios.post(
+  const { data } = await axios.post<SpotifyPlaylistResponse>(
     `${SPOTIFY_API_URL}/users/${userId}/playlists`,
     {
       name,
@@ -119,7 +151,7 @@ const createSpotifyPlaylistFromAlbums = async (
   // Add the albums to the playlist
   const tracks = await Promise.all(
     albumIds.map(async (id) => {
-      const { data } = await axios.get(
+      const { data } = await axios.get<SpotifyTrackResponse>(
         `${SPOTIFY_API_URL}/albums/${id}/tracks`,
         {
           headers: {
@@ -127,7 +159,7 @@ const createSpotifyPlaylistFromAlbums = async (
           },
         },
       );
-      return data.items.map((track: any) => ({
+      return data.items.map((track) => ({
         uri: track.uri,
       }));
     }),
