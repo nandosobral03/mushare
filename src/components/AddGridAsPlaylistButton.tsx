@@ -1,7 +1,9 @@
 "use client";
 
+import { getErrorMessage } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type AddGridAsPlaylistButtonProps = {
   id: string;
@@ -19,7 +21,10 @@ export const AddGridAsPlaylistButton = ({
       await createPlaylist.mutateAsync({
         id,
       });
+      toast.success("Playlist created successfully!");
     } catch (error) {
+      toast.error(getErrorMessage(error));
+      ``;
       console.error("Failed to create playlist:", error);
     } finally {
       setIsLoading(false);

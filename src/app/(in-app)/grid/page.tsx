@@ -20,12 +20,8 @@ const GridPage = () => {
   const createGrid = api.spotify.createGrid.useMutation({
     onSuccess: (grid) => {
       setShowSaveDialog(false);
-      toast.success("Grid saved successfully!", {
-        action: {
-          label: "View Grid",
-          onClick: () => router.push(`/grid/${grid.id}`),
-        },
-      });
+      router.push(`/grid/${grid.id}`);
+      toast.success("Grid saved successfully!");
     },
     onError: (error) => {
       toast.error("Failed to create grid", {
