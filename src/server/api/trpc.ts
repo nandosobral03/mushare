@@ -6,9 +6,10 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { cookies } from "next/headers";
 
 import { db } from "@/server/db";
 
@@ -97,6 +98,28 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 /**
+ * Middleware to check for Spotify access token
+ */
+const spotifyMiddleware = t.middleware(async ({ next, ctx }) => {
+  const cookie = await cookies();
+  const spotifyAccessToken = cookie.get("spotify_access_token")?.value;
+
+  if (!spotifyAccessToken) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Spotify access token is required",
+    });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      spotifyAccessToken,
+    },
+  });
+});
+
+/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
@@ -104,3 +127,12 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+
+/**
+ * Protected procedure for Spotify API endpoints
+ *
+ * This procedure ensures that the request includes a valid Spotify access token
+ */
+export const spotifyProtectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(spotifyMiddleware);
