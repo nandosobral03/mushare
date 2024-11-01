@@ -8,15 +8,19 @@ type AlbumGridProps = {
   size: number;
   selectedAlbums: (Album | null)[];
   onAlbumSelect: (album: Album | null, position: number) => void;
+  readonly?: boolean;
 };
 
 export const AlbumGrid = ({
   size,
   selectedAlbums,
   onAlbumSelect,
+  readonly = false,
 }: AlbumGridProps) => {
   const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
   const gridCells = Array.from({ length: size * size }, (_, i) => i);
+
+  if (readonly) return;
 
   return (
     <>
@@ -64,7 +68,7 @@ type AlbumCellProps = {
 const AlbumCell = ({ album, onSelect }: AlbumCellProps) => (
   <div
     onClick={onSelect}
-    className="hover:bg-spotify-800 text-spotify aspect-square cursor-pointer overflow-hidden rounded-lg border transition-colors hover:text-white"
+    className="aspect-square cursor-pointer overflow-hidden rounded-lg border text-spotify transition-colors hover:bg-spotify-800 hover:text-white"
   >
     {album ? (
       <img

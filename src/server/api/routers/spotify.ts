@@ -8,25 +8,62 @@ import { z } from "zod";
 
 export const spotifyRouter = createTRPCRouter({
   searchAlbums: spotifyProtectedProcedure
-    .input(z.object({ query: z.string() }))
+    .input(
+      z.object({
+        query: z.string({
+          required_error: "Search query is required",
+          invalid_type_error: "Search query must be a string",
+        }),
+      }),
+    )
     .query(async ({ input }) => {
       return await searchSpotifyAlbums(input.query);
     }),
   createGrid: spotifyProtectedProcedure
     .input(
-      z.object({
-        size: z.number().min(1).max(10),
-        albums: z.array(
-          z
-            .object({
-              id: z.string(),
-              name: z.string(),
-              artist: z.string(),
-              imageUrl: z.string(),
+      z
+        .object({
+          size: z
+            .number({
+              required_error: "Grid size is required",
+              invalid_type_error: "Grid size must be a number",
             })
-            .nullable(),
+            .min(2, "Grid size must be at least 2")
+            .max(5, "Grid size cannot be larger than 5"),
+          albums: z.array(
+            z
+              .object({
+                id: z.string({
+                  required_error: "Album ID is required",
+                  invalid_type_error: "Album ID must be a string",
+                }),
+                name: z.string({
+                  required_error: "Album name is required",
+                  invalid_type_error: "Album name must be a string",
+                }),
+                artist: z.string({
+                  required_error: "Artist name is required",
+                  invalid_type_error: "Artist name must be a string",
+                }),
+                imageUrl: z.string({
+                  required_error: "Album image URL is required",
+                  invalid_type_error: "Album image URL must be a string",
+                }),
+              })
+              .nullable(),
+          ),
+          title: z.string(),
+        })
+        .refine(
+          (data) =>
+            // length of albums array is size * size
+            data.albums.length === data.size * data.size &&
+            data.albums.every((album) => album !== null),
+          {
+            message:
+              "All grid positions must be filled with albums and match the grid size",
+          },
         ),
-      }),
     )
     .mutation(async ({ input, ctx }) => {
       const userId = await getUserId(ctx.spotifyAccessToken);
@@ -49,6 +86,7 @@ export const spotifyRouter = createTRPCRouter({
                 },
               })),
           },
+          title: input.title,
         },
       });
     }),

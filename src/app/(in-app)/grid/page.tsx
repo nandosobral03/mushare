@@ -3,12 +3,41 @@
 import { useState } from "react";
 import { AlbumGrid } from "@/components/AlbumGrid";
 import { SelectedAlbums } from "@/components/SelectedAlbums";
+import SaveGridDialog from "@/components/SaveGridDialog";
 import { Album } from "@/types/album";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils";
 
 const GridPage = () => {
   const [gridSize, setGridSize] = useState(3);
   const [selectedAlbums, setSelectedAlbums] = useState<(Album | null)[]>([]);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+
+  const createGrid = api.spotify.createGrid.useMutation({
+    onSuccess: () => {
+      setShowSaveDialog(false);
+      toast.success("Grid saved successfully!");
+    },
+    onError: (error) => {
+      toast.error("Failed to create grid", {
+        description: getErrorMessage(error),
+      });
+    },
+  });
+
+  const handleSave = async (title: string) => {
+    try {
+      await createGrid.mutateAsync({
+        size: gridSize,
+        albums: selectedAlbums.slice(0, gridSize * gridSize),
+        title,
+      });
+    } catch {
+      // Error is handled by onError callback
+    }
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -33,7 +62,7 @@ const GridPage = () => {
               max={10}
               value={gridSize}
               onChange={(e) => setGridSize(Number(e.target.value))}
-              className="focus:border-spotify focus:ring-spotify w-20 rounded-md bg-black p-2 text-center text-white outline-none focus:outline-none focus:ring-2"
+              className="w-20 rounded-md bg-black p-2 text-center text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
             />
           </div>
           <AlbumGrid
@@ -51,6 +80,12 @@ const GridPage = () => {
               }
             }}
           />
+          <button
+            onClick={() => setShowSaveDialog(true)}
+            className="mt-8 rounded-full bg-spotify px-8 py-3 font-semibold text-white hover:bg-spotify/90 disabled:opacity-50"
+          >
+            Save Grid
+          </button>
         </div>
         <SelectedAlbums
           albums={Array.from({ length: gridSize * gridSize }, (_, index) =>
@@ -58,6 +93,14 @@ const GridPage = () => {
           )}
         />
       </div>
+      <SaveGridDialog
+        open={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        onConfirm={handleSave}
+        gridSize={gridSize}
+        selectedAlbums={selectedAlbums}
+        isLoading={createGrid.isPending}
+      />
     </div>
   );
 };

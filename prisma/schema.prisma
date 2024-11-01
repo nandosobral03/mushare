@@ -24,6 +24,7 @@ model Grid {
   size          Int
   spotifyUserId String
   createdAt     DateTime @default(now())
+  title         String
 
   albums      Album[]
   spotifyUser SpotifyUser @relation(fields: [spotifyUserId], references: [spotifyId])
