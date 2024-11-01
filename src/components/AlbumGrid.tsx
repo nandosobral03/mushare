@@ -73,7 +73,9 @@ type AlbumCellProps = {
 const AlbumCell = ({ album, onSelect, readonly }: AlbumCellProps) => (
   <div
     onClick={onSelect}
-    className={`aspect-square overflow-hidden rounded-lg border text-spotify transition-colors ${
+    className={`aspect-square overflow-hidden rounded-sm text-spotify transition-colors ${
+      album ? "" : "border"
+    } ${
       readonly
         ? "cursor-default"
         : "cursor-pointer hover:bg-spotify-800 hover:text-white"

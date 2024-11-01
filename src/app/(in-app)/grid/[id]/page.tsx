@@ -3,15 +3,17 @@ import { notFound } from "next/navigation";
 import { AlbumGrid } from "@/components/AlbumGrid";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { AddGridAsPlaylistButton } from "@/components/AddGridAsPlaylistButton";
+import { SelectedAlbums } from "@/components/SelectedAlbums";
 
 type GridPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const GridPage = async ({ params }: GridPageProps) => {
-  const grid = await api.spotify.getGrid({ id: params.id });
+  const resolvedParams = await params;
+  const grid = await api.spotify.getGrid({ id: resolvedParams.id });
   if (!grid) {
     notFound();
   }
@@ -23,9 +25,17 @@ const GridPage = async ({ params }: GridPageProps) => {
         title={grid.title}
         description={`Created on ${grid.createdAt.toLocaleDateString()}`}
       />
-      <div className="flex grow flex-col items-center justify-center gap-4 p-8">
-        <div className="w-full max-w-[min(calc(100vh-32rem),calc(100vw-16rem))]">
-          <AlbumGrid size={grid.size} selectedAlbums={grid.albums} readonly />
+      <div className="flex grow flex-col items-center justify-center gap-4">
+        <div className="flex items-start gap-4 p-8">
+          <div className="w-full max-w-[min(calc(100vh-32rem),calc(100vw-16rem))]">
+            <AlbumGrid size={grid.size} selectedAlbums={grid.albums} readonly />
+          </div>
+          <SelectedAlbums
+            albums={grid.albums.map((album, index) => ({
+              ...album,
+              index,
+            }))}
+          />
         </div>
         <AddGridAsPlaylistButton id={grid.id} />
       </div>
