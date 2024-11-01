@@ -6,8 +6,8 @@ import { AlbumSelector } from "./AlbumSelector";
 
 type AlbumGridProps = {
   size: number;
-  selectedAlbums: Album[];
-  onAlbumSelect: (album: Album, position: number) => void;
+  selectedAlbums: (Album | null)[];
+  onAlbumSelect: (album: Album | null, position: number) => void;
 };
 
 export const AlbumGrid = ({
@@ -21,16 +21,23 @@ export const AlbumGrid = ({
   return (
     <>
       <div
-        className="grid aspect-square max-h-[calc(100vh-10rem)] max-w-[calc(100vw-10rem)] gap-4"
+        className="mx-auto grid aspect-square w-full gap-4"
         style={{
           gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+          maxWidth: "min(calc(100vh - 32rem), calc(100vw - 32rem))",
         }}
       >
         {gridCells.map((position) => (
           <AlbumCell
             key={position}
-            album={selectedAlbums[position]}
-            onSelect={() => setSelectedPosition(position)}
+            album={selectedAlbums[position] ?? undefined}
+            onSelect={() => {
+              if (selectedAlbums[position]) {
+                onAlbumSelect(null, position);
+              } else {
+                setSelectedPosition(position);
+              }
+            }}
           />
         ))}
       </div>
@@ -56,8 +63,8 @@ type AlbumCellProps = {
 
 const AlbumCell = ({ album, onSelect }: AlbumCellProps) => (
   <div
-    onClick={() => !album && onSelect()}
-    className="aspect-square cursor-pointer overflow-hidden rounded-lg border transition-colors hover:bg-gray-100"
+    onClick={onSelect}
+    className="hover:bg-spotify-800 text-spotify aspect-square cursor-pointer overflow-hidden rounded-lg border transition-colors hover:text-white"
   >
     {album ? (
       <img
@@ -66,8 +73,8 @@ const AlbumCell = ({ album, onSelect }: AlbumCellProps) => (
         className="h-full w-full object-cover"
       />
     ) : (
-      <div className="flex h-full w-full items-center justify-center text-gray-400">
-        Click to select album
+      <div className="flex h-full w-full items-center justify-center">
+        <span className="text-2xl">+</span>
       </div>
     )}
   </div>
