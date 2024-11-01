@@ -4,6 +4,7 @@ import { getErrorMessage } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 type AddGridAsPlaylistButtonProps = {
   id: string;
@@ -24,7 +25,6 @@ export const AddGridAsPlaylistButton = ({
       toast.success("Playlist created successfully!");
     } catch (error) {
       toast.error(getErrorMessage(error));
-      ``;
       console.error("Failed to create playlist:", error);
     } finally {
       setIsLoading(false);
@@ -32,12 +32,13 @@ export const AddGridAsPlaylistButton = ({
   };
 
   return (
-    <button
+    <Button
       onClick={handleClick}
       disabled={isLoading}
-      className="w-full max-w-sm rounded-full bg-spotify px-8 py-3 font-semibold text-white hover:bg-spotify/90 disabled:opacity-50"
+      className="w-full max-w-sm"
+      size="lg"
     >
       {isLoading ? "Creating playlist..." : "Add Grid as Playlist"}
-    </button>
+    </Button>
   );
 };
