@@ -16,7 +16,8 @@ model SpotifyUser {
   name      String
   image     String?
 
-  grids Grid[]
+  grids  Grid[]
+  charts Chart[]
 }
 
 model Grid {
@@ -31,10 +32,42 @@ model Grid {
 }
 
 model Album {
-  id        String @id @default(cuid())
-  spotifyId String @unique
-  name      String
-  artist    String
-  imageUrl  String
-  grids     Grid[]
+  id         String       @id @default(cuid())
+  spotifyId  String       @unique
+  name       String
+  artist     String
+  imageUrl   String
+  grids      Grid[]
+  chartAlbums ChartAlbum[]
+}
+
+model Chart {
+  id            String       @id @default(cuid())
+  title         String
+  description   String
+  spotifyUserId String
+  spotifyUser   SpotifyUser  @relation(fields: [spotifyUserId], references: [spotifyId])
+  albums        ChartAlbum[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([spotifyUserId])
+}
+
+model ChartAlbum {
+  id       String @id @default(cuid())
+  chartId  String
+  albumId  String
+  position Int
+  chart    Chart  @relation(fields: [chartId], references: [id], onDelete: Cascade)
+  album    Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([chartId])
+  @@index([albumId])
+}
+
+model SearchCache {
+  key       String @id
+  value     String
+  timestamp BigInt
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AlbumGrid } from "@/components/AlbumGrid";
-import { SelectedAlbums } from "@/components/SelectedAlbums";
-import SaveGridDialog from "@/components/SaveGridDialog";
+import { AlbumGrid } from "@/components/grid/AlbumGrid";
+import { SelectedAlbums } from "@/components/grid/SelectedAlbums";
+import SaveGridDialog from "@/components/grid/SaveGridDialog";
 import { type Album } from "@/types/album";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { api } from "@/trpc/react";

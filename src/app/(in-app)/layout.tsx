@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/Navbar";
+import { Navbar } from "@/components/grid/Navbar";
 
 export default function InAppLayout({
   children,

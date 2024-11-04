@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { type Album } from "@/types/album";
+import { type Album } from "@/types/spotify";
 import {
   Dialog,
   DialogContent,
@@ -9,17 +9,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { api } from "@/trpc/react";
+import { cn } from "@/lib/utils";
 
-type AlbumSelectorProps = {
+interface AlbumSelectorProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (album: Album) => void;
-};
+  selectedAlbumIds?: string[];
+}
 
 export const AlbumSelector = ({
   isOpen,
   onClose,
   onSelect,
+  selectedAlbumIds = [],
 }: AlbumSelectorProps) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -33,14 +36,15 @@ export const AlbumSelector = ({
     return () => clearTimeout(timer);
   }, [search]);
 
-  const { data: results = [], isLoading } = api.spotify.searchAlbums.useQuery(
-    {
-      query: debouncedSearch,
-    },
-    {
-      enabled: isOpen && debouncedSearch.length > 0,
-    },
-  );
+  const { data: results = [] as Album[], isLoading } =
+    api.spotify.searchAlbums.useQuery(
+      {
+        query: debouncedSearch,
+      },
+      {
+        enabled: isOpen && debouncedSearch.length > 0,
+      },
+    );
 
   const handleClose = () => {
     setSearch("");
@@ -70,14 +74,20 @@ export const AlbumSelector = ({
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-spotify"></div>
             </div>
           ) : (
-            results.map((album) => (
-              <div
+            results.map((album: Album) => (
+              <button
                 key={album.id}
                 onClick={() => {
                   onSelect(album);
                   handleClose();
                 }}
-                className="flex cursor-pointer gap-2 rounded border p-2 hover:bg-gray-100"
+                disabled={selectedAlbumIds.includes(album.id)}
+                className={cn(
+                  "flex items-center gap-4 rounded-lg p-4 transition-colors",
+                  "hover:bg-spotify-900/50",
+                  selectedAlbumIds.includes(album.id) &&
+                    "cursor-not-allowed opacity-50",
+                )}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -89,7 +99,7 @@ export const AlbumSelector = ({
                   <div className="font-medium">{album.name}</div>
                   <div className="text-sm text-gray-600">{album.artist}</div>
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>

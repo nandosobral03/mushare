@@ -1,11 +1,11 @@
 import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
-import { AlbumGrid } from "@/components/AlbumGrid";
+import { AlbumGrid } from "@/components/grid/AlbumGrid";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { AddGridAsPlaylistButton } from "@/components/AddGridAsPlaylistButton";
-import { SelectedAlbums } from "@/components/SelectedAlbums";
-import ShareButton from "@/components/ShareButton";
-import DownloadAsImageButton from "@/components/DownloadAsImageButton";
+import { AddGridAsPlaylistButton } from "@/components/grid/AddGridAsPlaylistButton";
+import { SelectedAlbums } from "@/components/grid/SelectedAlbums";
+import ShareButton from "@/components/grid/ShareButton";
+import DownloadAsImageButton from "@/components/grid/DownloadAsImageButton";
 
 type GridPageProps = {
   params: Promise<{

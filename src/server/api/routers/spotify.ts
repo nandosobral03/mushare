@@ -21,8 +21,35 @@ export const spotifyRouter = createTRPCRouter({
         }),
       }),
     )
-    .query(async ({ input }) => {
-      return await searchSpotifyAlbums(input.query);
+    .query(async ({ input, ctx }) => {
+      const cacheKey = `spotify-search:${input.query}`;
+      const cached = await ctx.db.searchCache.findUnique({
+        where: { key: cacheKey },
+      });
+
+      if (
+        cached &&
+        Date.now() - Number(cached.timestamp) < 24 * 60 * 60 * 1000
+      ) {
+        return JSON.parse(cached.value);
+      }
+
+      const results = await searchSpotifyAlbums(input.query);
+
+      await ctx.db.searchCache.upsert({
+        where: { key: cacheKey },
+        create: {
+          key: cacheKey,
+          value: JSON.stringify(results),
+          timestamp: Date.now(),
+        },
+        update: {
+          value: JSON.stringify(results),
+          timestamp: Date.now(),
+        },
+      });
+
+      return results;
     }),
   createGrid: spotifyProtectedProcedure
     .input(
