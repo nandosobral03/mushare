@@ -1,4 +1,8 @@
-import { createTRPCRouter, spotifyProtectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  spotifyProtectedProcedure,
+} from "@/server/api/trpc";
 import {
   createSpotifyPlaylistFromAlbums,
   getUserId,
@@ -91,7 +95,7 @@ export const spotifyRouter = createTRPCRouter({
         },
       });
     }),
-  getGrid: spotifyProtectedProcedure
+  getGrid: publicProcedure
     .input(
       z.object({
         id: z.string(),

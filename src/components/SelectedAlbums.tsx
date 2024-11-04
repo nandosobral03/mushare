@@ -6,7 +6,6 @@ type SelectedAlbumsProps = {
 
 export const SelectedAlbums = ({ albums }: SelectedAlbumsProps) => (
   <div className="w-80 border-l pl-8">
-    <h2 className="mb-4 text-xl font-bold text-white">Selected Albums</h2>
     <div className="space-y-4">
       {albums.map((album, index) => (
         <div key={index} className="flex gap-3">

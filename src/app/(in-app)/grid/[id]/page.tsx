@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { AddGridAsPlaylistButton } from "@/components/AddGridAsPlaylistButton";
 import { SelectedAlbums } from "@/components/SelectedAlbums";
 import ShareButton from "@/components/ShareButton";
+import DownloadAsImageButton from "@/components/DownloadAsImageButton";
 
 type GridPageProps = {
   params: Promise<{
@@ -27,12 +28,13 @@ const GridPage = async ({ params }: GridPageProps) => {
         description={`Created on ${grid.createdAt.toLocaleDateString()}`}
       />
       <div className="flex grow flex-col items-center justify-center gap-4">
-        <div className="flex items-start gap-4 p-8">
+        <div className="flex items-start gap-4 p-8" id="grid">
           <div className="flex w-full max-w-[min(calc(100vh-32rem),calc(100vw-16rem))] flex-col items-center">
             <AlbumGrid size={grid.size} selectedAlbums={grid.albums} readonly />
             <div className="mt-4 flex gap-4">
               <AddGridAsPlaylistButton id={grid.id} />
               <ShareButton gridId={grid.id} />
+              <DownloadAsImageButton gridId={grid.id} />
             </div>
           </div>
           <SelectedAlbums
