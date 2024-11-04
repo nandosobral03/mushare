@@ -10,6 +10,7 @@ import {
 } from "@/lib/spotify";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import type { Album } from "@/types/spotify";
 
 export const spotifyRouter = createTRPCRouter({
   searchAlbums: spotifyProtectedProcedure
@@ -31,7 +32,7 @@ export const spotifyRouter = createTRPCRouter({
         cached &&
         Date.now() - Number(cached.timestamp) < 24 * 60 * 60 * 1000
       ) {
-        return JSON.parse(cached.value);
+        return JSON.parse(cached.value) as Album[];
       }
 
       const results = await searchSpotifyAlbums(input.query);
@@ -61,7 +62,7 @@ export const spotifyRouter = createTRPCRouter({
               invalid_type_error: "Grid size must be a number",
             })
             .min(2, "Grid size must be at least 2")
-            .max(5, "Grid size cannot be larger than 5"),
+            .max(6, "Grid size cannot be larger than 5"),
           albums: z.array(
             z
               .object({
@@ -104,17 +105,22 @@ export const spotifyRouter = createTRPCRouter({
           size: input.size,
           spotifyUserId: userId,
           albums: {
-            connectOrCreate: input.albums
+            create: input.albums
               .filter(
                 (album): album is NonNullable<typeof album> => album !== null,
               )
-              .map((album) => ({
-                where: { spotifyId: album.id },
-                create: {
-                  spotifyId: album.id,
-                  name: album.name,
-                  artist: album.artist,
-                  imageUrl: album.imageUrl,
+              .map((album, index) => ({
+                position: index,
+                album: {
+                  connectOrCreate: {
+                    where: { spotifyId: album.id },
+                    create: {
+                      spotifyId: album.id,
+                      name: album.name,
+                      artist: album.artist,
+                      imageUrl: album.imageUrl,
+                    },
+                  },
                 },
               })),
           },
@@ -132,7 +138,11 @@ export const spotifyRouter = createTRPCRouter({
       const grid = await ctx.db.grid.findUnique({
         where: { id: input.id },
         include: {
-          albums: true,
+          albums: {
+            include: {
+              album: true,
+            },
+          },
         },
       });
 
@@ -157,7 +167,11 @@ export const spotifyRouter = createTRPCRouter({
       const grid = await ctx.db.grid.findUnique({
         where: { id: input.id },
         include: {
-          albums: true,
+          albums: {
+            include: {
+              album: true,
+            },
+          },
           spotifyUser: true,
         },
       });
@@ -170,7 +184,7 @@ export const spotifyRouter = createTRPCRouter({
       }
 
       return await createSpotifyPlaylistFromAlbums(
-        grid.albums.map((album) => album.spotifyId),
+        grid.albums.map((album) => album.album.spotifyId),
         `Mushare ${grid.size}x${grid.size} - ${grid.title} by ${grid.spotifyUser.name}`,
         `Playlist created by Mushare based on the grid "${grid.title}", grid can be found at https://mushare.app/grid/${grid.id}`,
       );

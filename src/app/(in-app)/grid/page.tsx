@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AlbumGrid } from "@/components/grid/AlbumGrid";
 import { SelectedAlbums } from "@/components/grid/SelectedAlbums";
 import SaveGridDialog from "@/components/grid/SaveGridDialog";
-import { type Album } from "@/types/album";
+import { type Album } from "@/types/spotify";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
@@ -13,7 +13,9 @@ import { useRouter } from "next/navigation";
 
 const GridPage = () => {
   const [gridSize, setGridSize] = useState(3);
-  const [selectedAlbums, setSelectedAlbums] = useState<(Album | null)[]>([]);
+  const [selectedAlbums, setSelectedAlbums] = useState<
+    ((Album & { position: number }) | null)[]
+  >([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const router = useRouter();
 
@@ -61,8 +63,8 @@ const GridPage = () => {
             <input
               type="number"
               id="gridSize"
-              min={1}
-              max={10}
+              min={2}
+              max={6}
               value={gridSize}
               onChange={(e) => setGridSize(Number(e.target.value))}
               className="w-20 rounded-md bg-black p-2 text-center text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
@@ -77,7 +79,10 @@ const GridPage = () => {
                 newAlbums[position] = album;
                 setSelectedAlbums(newAlbums);
               } else {
-                const newAlbums = [...selectedAlbums];
+                const newAlbums = [...selectedAlbums] as (
+                  | (Album & { position: number })
+                  | null
+                )[];
                 newAlbums[position] = null;
                 setSelectedAlbums(newAlbums);
               }

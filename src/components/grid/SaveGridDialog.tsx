@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useState } from "react";
-import { type Album } from "@/types/album";
+import { type Album } from "@/types/spotify";
 import { AlbumGrid } from "./AlbumGrid";
 
 type SaveGridDialogProps = {
@@ -29,7 +29,13 @@ const SaveGridDialog = ({
           <DialogTitle>Save Your Grid</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center gap-6">
-          <AlbumGrid size={gridSize} selectedAlbums={selectedAlbums} readonly />
+          <AlbumGrid
+            size={gridSize}
+            selectedAlbums={selectedAlbums.map((album, i) =>
+              album ? { ...album, position: i } : null,
+            )}
+            readonly
+          />
           <input
             type="text"
             placeholder="Enter grid title..."

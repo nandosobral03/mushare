@@ -5,15 +5,19 @@ type SelectedAlbumsProps = {
 };
 
 export const SelectedAlbums = ({ albums }: SelectedAlbumsProps) => (
-  <div className="w-80 border-l pl-8">
-    <div className="space-y-4">
+  <div className="w-[40rem] border-l pl-8">
+    <div
+      className={`grid ${albums.length > 16 ? "grid-cols-2" : "grid-cols-1"} gap-4`}
+    >
       {albums.map((album, index) => (
         <div key={index} className="flex gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={album?.imageUrl ?? "/default-album-artwork.png"}
             alt={album?.name ?? "Empty album slot"}
-            className="h-16 w-16 rounded object-cover"
+            className={`rounded object-cover ${
+              albums.length > 9 ? "h-12 w-12" : "h-16 w-16"
+            }`}
           />
           <div>
             <div className="font-medium text-white">

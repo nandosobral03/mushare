@@ -13,8 +13,8 @@ const DownloadAsImageButton = ({ gridId }: { gridId: string }) => {
     if (!gridElement) return;
 
     // Use html2canvas to capture the grid element
-    import("html2canvas").then((html2canvas) => {
-      html2canvas
+    void import("html2canvas").then((html2canvas) => {
+      void html2canvas
         .default(gridElement as HTMLElement, {
           backgroundColor: "#000000",
           scale: 2, // Higher quality

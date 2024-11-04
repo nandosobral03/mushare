@@ -27,17 +27,29 @@ model Grid {
   createdAt     DateTime @default(now())
   title         String
 
-  albums      Album[]
+  albums      GridAlbum[]
   spotifyUser SpotifyUser @relation(fields: [spotifyUserId], references: [spotifyId])
 }
 
+model GridAlbum {
+  id       String @id @default(cuid())
+  gridId   String
+  albumId  String
+  position Int
+  grid     Grid   @relation(fields: [gridId], references: [id], onDelete: Cascade)
+  album    Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([gridId])
+  @@index([albumId])
+}
+
 model Album {
-  id         String       @id @default(cuid())
-  spotifyId  String       @unique
-  name       String
-  artist     String
-  imageUrl   String
-  grids      Grid[]
+  id          String       @id @default(cuid())
+  spotifyId   String       @unique
+  name        String
+  artist      String
+  imageUrl    String
+  grids       GridAlbum[]
   chartAlbums ChartAlbum[]
 }
 

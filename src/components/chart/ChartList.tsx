@@ -1,6 +1,6 @@
 import { type Album } from "@/types/spotify";
 import { motion, Reorder, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Trash2, Check } from "lucide-react";
 
 interface ChartListProps {

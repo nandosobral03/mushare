@@ -5,7 +5,6 @@ import { ChartList } from "@/components/chart/ChartList";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SaveChartButton } from "@/components/chart/SaveChartButton";
-import { SelectedAlbumsChart } from "@/components/chart/SelectedAlbumsChart";
 import { Button } from "@/components/ui/button";
 import { AlbumSelector } from "@/components/grid/AlbumSelector";
 import { AnimatePresence } from "framer-motion";

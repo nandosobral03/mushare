@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { type Album } from "@/types/album";
+import { type Album } from "@/types/spotify";
 import { AlbumSelector } from "./AlbumSelector";
 
 type AlbumGridProps = {
   size: number;
-  selectedAlbums: (Album | null)[];
-  onAlbumSelect?: (album: Album | null, position: number) => void;
+  selectedAlbums: ((Album & { position: number }) | null)[];
+  onAlbumSelect?: (
+    album: (Album & { position: number }) | null,
+    position: number,
+  ) => void;
   readonly?: boolean;
 };
 
@@ -54,7 +57,10 @@ export const AlbumGrid = ({
           onClose={() => setSelectedPosition(null)}
           onSelect={(album) => {
             if (selectedPosition !== null) {
-              onAlbumSelect?.(album, selectedPosition);
+              onAlbumSelect?.(
+                { ...album, position: selectedPosition },
+                selectedPosition,
+              );
               setSelectedPosition(null);
             }
           }}

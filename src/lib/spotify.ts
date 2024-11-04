@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import type { Album } from "@/types/album";
+import type { Album } from "@/types/spotify";
 import axios from "axios";
 
 const SPOTIFY_API_URL = "https://api.spotify.com/v1";
