@@ -29,7 +29,7 @@ export const SaveChartButton = ({
         createChart.mutate({
           title,
           description,
-          albumIds: albums.map((album) => album.id),
+          albums,
         })
       }
       disabled={!title || albums.length === 0}

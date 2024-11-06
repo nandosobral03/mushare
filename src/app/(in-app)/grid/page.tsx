@@ -45,7 +45,7 @@ const GridPage = () => {
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <main className="flex h-full flex-col">
       <PageHeader
         icon="grid_view"
         title="Create Grid"
@@ -109,7 +109,7 @@ const GridPage = () => {
         selectedAlbums={selectedAlbums}
         isLoading={createGrid.isPending}
       />
-    </div>
+    </main>
   );
 };
 

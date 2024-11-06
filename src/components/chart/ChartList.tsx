@@ -1,15 +1,24 @@
+"use client";
+
 import { type Album } from "@/types/spotify";
 import { motion, Reorder, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Trash2, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ChartListProps {
   albums: (Album & { index: number })[];
-  onReorder: (newOrder: (Album & { index: number })[]) => void;
-  onRemove: (album: Album & { index: number }) => void;
+  onReorder?: (newOrder: (Album & { index: number })[]) => void;
+  onRemove?: (album: Album & { index: number }) => void;
+  readonly?: boolean;
 }
 
-export const ChartList = ({ albums, onReorder, onRemove }: ChartListProps) => {
+export const ChartList = ({
+  albums,
+  onReorder,
+  onRemove,
+  readonly = false,
+}: ChartListProps) => {
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   // Handle click outside
@@ -29,11 +38,11 @@ export const ChartList = ({ albums, onReorder, onRemove }: ChartListProps) => {
   }, []);
 
   return (
-    <div className="relative min-h-[200px]">
+    <div className="relative w-full">
       <Reorder.Group
         axis="y"
         values={albums}
-        onReorder={onReorder}
+        onReorder={onReorder ?? (() => {})}
         className="space-y-4"
         style={{ position: "relative" }}
       >
@@ -43,9 +52,13 @@ export const ChartList = ({ albums, onReorder, onRemove }: ChartListProps) => {
             value={album}
             style={{ position: "relative" }}
             className="relative overflow-hidden rounded-lg"
+            dragListener={!readonly}
           >
             <div
-              className="relative flex cursor-grab items-center gap-4 rounded-lg p-4 hover:bg-spotify-900/50 active:cursor-grabbing"
+              className={cn(
+                "relative flex items-center gap-4 rounded-lg bg-spotify-800/30 p-4 hover:bg-spotify-800/70",
+                !readonly && "cursor-grab active:cursor-grabbing",
+              )}
               style={{
                 transform: "translate3d(0, 0, 0)",
                 WebkitTransform: "translate3d(0, 0, 0)",
@@ -65,12 +78,14 @@ export const ChartList = ({ albums, onReorder, onRemove }: ChartListProps) => {
                 <h3 className="font-semibold text-white">{album.name}</h3>
                 <p className="text-primary-foreground">{album.artist}</p>
               </div>
-              <button
-                onClick={() => setPendingDelete(album.id)}
-                className="delete-trigger ml-auto p-2 text-gray-400 hover:text-red-500"
-              >
-                <Trash2 size={20} />
-              </button>
+              {!readonly && (
+                <button
+                  onClick={() => setPendingDelete(album.id)}
+                  className="delete-trigger ml-auto p-2 text-gray-400 hover:text-red-500"
+                >
+                  <Trash2 size={20} />
+                </button>
+              )}
             </div>
 
             <AnimatePresence>
@@ -88,7 +103,7 @@ export const ChartList = ({ albums, onReorder, onRemove }: ChartListProps) => {
                     exit={{ scale: 0 }}
                     transition={{ duration: 0.15 }}
                     onClick={() => {
-                      onRemove(album);
+                      onRemove?.(album);
                       setPendingDelete(null);
                     }}
                     className="p-2 text-white transition-transform hover:scale-110"

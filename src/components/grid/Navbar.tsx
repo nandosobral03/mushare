@@ -19,8 +19,8 @@ export const Navbar = () => {
         <Link href="/grid" className="flex items-center gap-2">
           <span className={getNavItemClass("/grid")}>apps</span>
         </Link>
-        <Link href="/charts" className="flex items-center gap-2">
-          <span className={getNavItemClass("/charts")}>view_list</span>
+        <Link href="/chart" className="flex items-center gap-2">
+          <span className={getNavItemClass("/chart")}>view_list</span>
         </Link>
         <Link href="/users" className="flex items-center gap-2">
           <span className={getNavItemClass("/users")}>person</span>
