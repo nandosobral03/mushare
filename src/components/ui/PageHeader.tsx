@@ -11,5 +11,6 @@ export const PageHeader = ({ icon, title, description }: PageHeaderProps) => (
       <h1 className="text-3xl font-bold text-white">{title}</h1>
     </div>
     <p className="text-muted-foreground">{description}</p>
+    <div className="h-0.5 w-full bg-spotify" />
   </div>
 );

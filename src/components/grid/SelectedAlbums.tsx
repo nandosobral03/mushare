@@ -5,7 +5,7 @@ type SelectedAlbumsProps = {
 };
 
 export const SelectedAlbums = ({ albums }: SelectedAlbumsProps) => (
-  <div className="w-[40rem] border-l pl-8">
+  <div className="flex-1 border-l pl-8">
     <div
       className={`grid ${albums.length > 16 ? "grid-cols-2" : "grid-cols-1"} gap-4`}
     >

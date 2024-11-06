@@ -19,7 +19,7 @@ const ChartPage = async ({ params }: ChartPageProps) => {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <>
       <PageHeader
         icon="view_list"
         title={chart.title}
@@ -29,7 +29,7 @@ const ChartPage = async ({ params }: ChartPageProps) => {
         }
       />
       <div className="flex flex-col items-center gap-4">
-        <div className="flex w-full max-w-5xl flex-col items-center gap-4 p-8">
+        <div className="flex w-full max-w-5xl flex-col items-center gap-4">
           <div className="flex gap-4">
             <AddChartAsPlaylistButton id={chart.id} />
             <ShareButton gridId={chart.id} />
@@ -43,7 +43,7 @@ const ChartPage = async ({ params }: ChartPageProps) => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

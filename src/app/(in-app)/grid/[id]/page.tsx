@@ -6,6 +6,7 @@ import { AddGridAsPlaylistButton } from "@/components/grid/AddGridAsPlaylistButt
 import { SelectedAlbums } from "@/components/grid/SelectedAlbums";
 import ShareButton from "@/components/grid/ShareButton";
 import DownloadAsImageButton from "@/components/grid/DownloadAsImageButton";
+import { ContentWrapper } from "@/components/ui/ContentWrapper";
 
 type GridPageProps = {
   params: Promise<{
@@ -21,14 +22,17 @@ const GridPage = async ({ params }: GridPageProps) => {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <>
       <PageHeader
         icon="grid_view"
         title={grid.title}
         description={`Created on ${grid.createdAt.toLocaleDateString()}`}
       />
-      <div className="flex grow flex-col items-center justify-center gap-4">
-        <div className="flex items-start gap-4 p-8" id="grid">
+      <ContentWrapper>
+        <div
+          className="flex w-full grow flex-col items-center justify-center gap-4"
+          id="grid"
+        >
           <div className="flex w-full max-w-[min(calc(100vh-32rem),calc(100vw-16rem))] flex-col items-center">
             <AlbumGrid
               size={grid.size}
@@ -55,8 +59,8 @@ const GridPage = async ({ params }: GridPageProps) => {
             }))}
           />
         </div>
-      </div>
-    </div>
+      </ContentWrapper>
+    </>
   );
 };
 

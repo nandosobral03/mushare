@@ -22,8 +22,8 @@ export const Navbar = () => {
         <Link href="/chart" className="flex items-center gap-2">
           <span className={getNavItemClass("/chart")}>view_list</span>
         </Link>
-        <Link href="/users" className="flex items-center gap-2">
-          <span className={getNavItemClass("/users")}>person</span>
+        <Link href="/profile" className="flex items-center gap-2">
+          <span className={getNavItemClass("/profile")}>person</span>
         </Link>
       </div>
       <Link href="/api/auth/signout" className="flex items-center gap-2">

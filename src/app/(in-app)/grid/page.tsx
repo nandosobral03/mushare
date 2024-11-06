@@ -10,6 +10,7 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { ContentWrapper } from "@/components/ui/ContentWrapper";
 
 const GridPage = () => {
   const [gridSize, setGridSize] = useState(3);
@@ -45,62 +46,66 @@ const GridPage = () => {
   };
 
   return (
-    <main className="flex h-full flex-col">
+    <>
       <PageHeader
         icon="grid_view"
         title="Create Grid"
         description="Create your own album grid by selecting albums from your Spotify library."
       />
-      <div className="flex grow gap-8 p-8">
-        <div className="flex flex-1 flex-col items-center justify-stretch">
-          <div className="mb-8 flex items-center gap-4 rounded-lg p-4">
-            <label
-              htmlFor="gridSize"
-              className="text-sm font-medium text-gray-200"
-            >
-              Grid Size
-            </label>
-            <input
-              type="number"
-              id="gridSize"
-              min={2}
-              max={6}
-              value={gridSize}
-              onChange={(e) => setGridSize(Number(e.target.value))}
-              className="w-20 rounded-md bg-black p-2 text-center text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
+      <ContentWrapper>
+        <div className="flex w-full grow gap-8 p-8">
+          <div className="flex flex-1 flex-col items-center justify-stretch">
+            <div className="mb-8 flex items-center gap-4 rounded-lg p-4">
+              <label
+                htmlFor="gridSize"
+                className="text-sm font-medium text-gray-200"
+              >
+                Grid Size
+              </label>
+              <input
+                type="number"
+                id="gridSize"
+                min={2}
+                max={6}
+                value={gridSize}
+                onChange={(e) => setGridSize(Number(e.target.value))}
+                className="w-20 rounded-md bg-black p-2 text-center text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
+              />
+            </div>
+            <AlbumGrid
+              size={gridSize}
+              selectedAlbums={selectedAlbums}
+              onAlbumSelect={(album, position) => {
+                if (album) {
+                  const newAlbums = [...selectedAlbums];
+                  newAlbums[position] = album;
+                  setSelectedAlbums(newAlbums);
+                } else {
+                  const newAlbums = [...selectedAlbums] as (
+                    | (Album & { position: number })
+                    | null
+                  )[];
+                  newAlbums[position] = null;
+                  setSelectedAlbums(newAlbums);
+                }
+              }}
             />
+            <button
+              onClick={() => setShowSaveDialog(true)}
+              className="mt-8 rounded-full bg-spotify px-8 py-3 font-semibold text-white hover:bg-spotify/90 disabled:opacity-50"
+            >
+              Save Grid
+            </button>
           </div>
-          <AlbumGrid
-            size={gridSize}
-            selectedAlbums={selectedAlbums}
-            onAlbumSelect={(album, position) => {
-              if (album) {
-                const newAlbums = [...selectedAlbums];
-                newAlbums[position] = album;
-                setSelectedAlbums(newAlbums);
-              } else {
-                const newAlbums = [...selectedAlbums] as (
-                  | (Album & { position: number })
-                  | null
-                )[];
-                newAlbums[position] = null;
-                setSelectedAlbums(newAlbums);
-              }
-            }}
+          <SelectedAlbums
+            albums={Array.from({ length: gridSize * gridSize }, (_, index) =>
+              selectedAlbums[index]
+                ? { ...selectedAlbums[index], index }
+                : null,
+            )}
           />
-          <button
-            onClick={() => setShowSaveDialog(true)}
-            className="mt-8 rounded-full bg-spotify px-8 py-3 font-semibold text-white hover:bg-spotify/90 disabled:opacity-50"
-          >
-            Save Grid
-          </button>
         </div>
-        <SelectedAlbums
-          albums={Array.from({ length: gridSize * gridSize }, (_, index) =>
-            selectedAlbums[index] ? { ...selectedAlbums[index], index } : null,
-          )}
-        />
-      </div>
+      </ContentWrapper>
       <SaveGridDialog
         open={showSaveDialog}
         onOpenChange={setShowSaveDialog}
@@ -109,7 +114,7 @@ const GridPage = () => {
         selectedAlbums={selectedAlbums}
         isLoading={createGrid.isPending}
       />
-    </main>
+    </>
   );
 };
 

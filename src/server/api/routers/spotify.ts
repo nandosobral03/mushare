@@ -189,4 +189,10 @@ export const spotifyRouter = createTRPCRouter({
         `Playlist created by Mushare based on the grid "${grid.title}", grid can be found at https://mushare.app/grid/${grid.id}`,
       );
     }),
+  getUser: spotifyProtectedProcedure.query(async ({ ctx }) => {
+    const userId = await getUserId(ctx.spotifyAccessToken);
+    return await ctx.db.spotifyUser.findUnique({
+      where: { spotifyId: userId },
+    });
+  }),
 });
