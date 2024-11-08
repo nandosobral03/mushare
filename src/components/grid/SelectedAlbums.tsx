@@ -20,11 +20,13 @@ export const SelectedAlbums = ({ albums }: SelectedAlbumsProps) => (
             }`}
           />
           <div>
-            <div className="font-medium text-white">
+            <div className="font-medium text-foreground">
               {index + 1}. {album?.name ?? "Empty"}
             </div>
             {album && (
-              <div className="text-sm text-gray-300">{album.artist}</div>
+              <div className="text-sm text-muted-foreground">
+                {album.artist}
+              </div>
             )}
           </div>
         </div>

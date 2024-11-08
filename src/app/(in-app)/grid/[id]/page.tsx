@@ -26,38 +26,40 @@ const GridPage = async ({ params }: GridPageProps) => {
       <PageHeader
         icon="grid_view"
         title={grid.title}
-        description={`Created on ${grid.createdAt.toLocaleDateString()}`}
+        description={`Created on ${grid.createdAt.toLocaleDateString()} by ${grid.spotifyUserId}`}
       />
       <ContentWrapper>
-        <div
-          className="flex w-full grow flex-col items-center justify-center gap-4"
-          id="grid"
-        >
-          <div className="flex w-full max-w-[min(calc(100vh-32rem),calc(100vw-16rem))] flex-col items-center">
-            <AlbumGrid
-              size={grid.size}
-              selectedAlbums={grid.albums.map((album) => ({
-                ...album.album,
-                position: album.position,
-              }))}
-              readonly
-            />
-            <div className="mt-4 flex gap-4">
-              <AddGridAsPlaylistButton id={grid.id} />
-              <ShareButton gridId={grid.id} />
-              <DownloadAsImageButton gridId={grid.id} />
+        <div className="flex h-full w-full items-center justify-center">
+          <div
+            className="flex w-full max-w-7xl grow items-center justify-center gap-4"
+            id="grid"
+          >
+            <div className="flex w-2/3 max-w-[min(calc(100vh-32rem),calc(100vw-16rem))] flex-col items-center">
+              <AlbumGrid
+                size={grid.size}
+                selectedAlbums={grid.albums.map((album) => ({
+                  ...album.album,
+                  position: album.position,
+                }))}
+                readonly
+              />
+              <div className="mt-4 flex gap-4">
+                <AddGridAsPlaylistButton id={grid.id} />
+                <ShareButton gridId={grid.id} />
+                <DownloadAsImageButton gridId={grid.id} />
+              </div>
             </div>
+            <SelectedAlbums
+              albums={grid.albums.map((album, index) => ({
+                name: album.album.name,
+                artist: album.album.artist,
+                imageUrl: album.album.imageUrl,
+                id: album.album.id,
+                spotifyId: album.album.spotifyId,
+                index,
+              }))}
+            />
           </div>
-          <SelectedAlbums
-            albums={grid.albums.map((album, index) => ({
-              name: album.album.name,
-              artist: album.album.artist,
-              imageUrl: album.album.imageUrl,
-              id: album.album.id,
-              spotifyId: album.album.spotifyId,
-              index,
-            }))}
-          />
         </div>
       </ContentWrapper>
     </>

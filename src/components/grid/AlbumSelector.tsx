@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 interface AlbumSelectorProps {
   isOpen: boolean;
@@ -59,11 +60,9 @@ export const AlbumSelector = ({
           <DialogTitle>Select an Album</DialogTitle>
         </DialogHeader>
         <div className="mb-4 flex gap-2">
-          <input
-            type="text"
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 rounded border p-2 focus:outline-none focus:ring-2 focus:ring-spotify"
             placeholder="Search for an album..."
           />
         </div>
@@ -84,7 +83,7 @@ export const AlbumSelector = ({
                 disabled={selectedAlbumIds.includes(album.id)}
                 className={cn(
                   "flex items-center gap-4 rounded-lg p-4 transition-colors",
-                  "hover:bg-spotify-900/50",
+                  "hover:bg-spotify-800/50",
                   selectedAlbumIds.includes(album.id) &&
                     "cursor-not-allowed opacity-50",
                 )}

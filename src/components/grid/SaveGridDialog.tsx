@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useState } from "react";
 import { type Album } from "@/types/spotify";
 import { AlbumGrid } from "./AlbumGrid";
+import { Input } from "../ui/input";
 
 type SaveGridDialogProps = {
   open: boolean;
@@ -36,12 +37,11 @@ const SaveGridDialog = ({
             )}
             readonly
           />
-          <input
+          <Input
             type="text"
             placeholder="Enter grid title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-md p-2 outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
           />
           <button
             onClick={() => onConfirm(title)}

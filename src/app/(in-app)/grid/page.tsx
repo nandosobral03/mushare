@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
+import { Button } from "@/components/ui/button";
 
 const GridPage = () => {
   const [gridSize, setGridSize] = useState(3);
@@ -45,6 +46,12 @@ const GridPage = () => {
     }
   };
 
+  const isGridComplete =
+    selectedAlbums
+      .slice(0, gridSize * gridSize)
+      .filter((album) => album !== null).length ===
+    gridSize * gridSize;
+
   return (
     <>
       <PageHeader
@@ -54,23 +61,40 @@ const GridPage = () => {
       />
       <ContentWrapper>
         <div className="flex w-full grow gap-8 p-8">
-          <div className="flex flex-1 flex-col items-center justify-stretch">
+          <div className="flex w-2/3 flex-col items-center justify-stretch">
             <div className="mb-8 flex items-center gap-4 rounded-lg p-4">
-              <label
-                htmlFor="gridSize"
-                className="text-sm font-medium text-gray-200"
-              >
-                Grid Size
-              </label>
-              <input
-                type="number"
-                id="gridSize"
-                min={2}
-                max={6}
-                value={gridSize}
-                onChange={(e) => setGridSize(Number(e.target.value))}
-                className="w-20 rounded-md bg-black p-2 text-center text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
-              />
+              <div className="relative w-24">
+                <input
+                  id="gridSize"
+                  min={2}
+                  max={6}
+                  value={gridSize}
+                  onChange={(e) =>
+                    setGridSize(
+                      Math.min(Math.max(Number(e.target.value), 2), 6),
+                    )
+                  }
+                  className="w-full rounded-md bg-black p-3 text-center text-lg text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
+                />
+                <div className="absolute right-2 top-0 flex h-full flex-col justify-center">
+                  <button
+                    onClick={() => setGridSize(Math.min(gridSize + 1, 6))}
+                    className="text-spotify hover:text-white"
+                  >
+                    <span className="material-symbols-outlined text-lg">
+                      expand_less
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setGridSize(Math.max(gridSize - 1, 2))}
+                    className="text-spotify hover:text-white"
+                  >
+                    <span className="material-symbols-outlined text-lg">
+                      expand_more
+                    </span>
+                  </button>
+                </div>
+              </div>
             </div>
             <AlbumGrid
               size={gridSize}
@@ -90,12 +114,14 @@ const GridPage = () => {
                 }
               }}
             />
-            <button
+            <Button
               onClick={() => setShowSaveDialog(true)}
-              className="mt-8 rounded-full bg-spotify px-8 py-3 font-semibold text-white hover:bg-spotify/90 disabled:opacity-50"
+              disabled={!isGridComplete}
+              className="mt-8"
+              size="lg"
             >
               Save Grid
-            </button>
+            </Button>
           </div>
           <SelectedAlbums
             albums={Array.from({ length: gridSize * gridSize }, (_, index) =>

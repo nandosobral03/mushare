@@ -54,6 +54,9 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        ring: {
+          DEFAULT: "#1DB954",
+        },
         spotify: {
           DEFAULT: "#1DB954",
           50: "#B7F0CB",
