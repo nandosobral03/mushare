@@ -45,6 +45,7 @@ export default async function ProfilePage() {
       <ContentWrapper>
         <div className="flex items-center gap-2">
           {session?.image && (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={session.image}
               alt={session.name ?? ""}

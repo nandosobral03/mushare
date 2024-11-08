@@ -18,7 +18,7 @@ type GridPageProps = {
 
 const GridPage = async ({ params }: GridPageProps) => {
   const resolvedParams = await params;
-  const grid = await api.spotify.getGrid({ id: resolvedParams.id });
+  const grid = await api.grid.getGrid({ id: resolvedParams.id });
   if (!grid) {
     notFound();
   }

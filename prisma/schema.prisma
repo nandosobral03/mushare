@@ -33,6 +33,7 @@ model Grid {
   albums      GridAlbum[]
   spotifyUser SpotifyUser @relation(fields: [spotifyUserId], references: [spotifyId])
   likes     GridLike[]
+  savedCount Int      @default(0)
 }
 
 model GridAlbum {
@@ -55,6 +56,7 @@ model Album {
   imageUrl    String
   grids       GridAlbum[]
   chartAlbums ChartAlbum[]
+  savedCount  Int          @default(0)
 }
 
 model Chart {
@@ -66,7 +68,7 @@ model Chart {
   albums        ChartAlbum[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  likes     ChartLike[]
+  likes         ChartLike[]
 
   @@index([spotifyUserId])
 }
@@ -97,7 +99,7 @@ model GridLike {
   user      SpotifyUser @relation(fields: [userId], references: [spotifyId], onDelete: Cascade)
   grid      Grid        @relation(fields: [gridId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, gridId])
+  @@unique([userId, gridId])
 }
 
 model ChartLike {
@@ -108,5 +110,5 @@ model ChartLike {
   user      SpotifyUser @relation(fields: [userId], references: [spotifyId], onDelete: Cascade)
   chart     Chart       @relation(fields: [chartId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, chartId])
+  @@unique([userId, chartId])
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { type Grid, type Chart } from "@prisma/client";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -49,6 +48,7 @@ const MediaScroller = ({ title, items, type }: MediaScrollerProps) => {
                     <div className="grid grid-cols-2 grid-rows-2 gap-0.5">
                       {getCompositeImage(item)?.map(
                         (image: string, i: number) => (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             key={i}
                             src={image}
@@ -59,6 +59,7 @@ const MediaScroller = ({ title, items, type }: MediaScrollerProps) => {
                       )}
                     </div>
                   ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={getCompositeImage(item)?.[0]}
                       alt=""

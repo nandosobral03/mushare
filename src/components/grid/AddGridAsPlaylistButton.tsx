@@ -12,7 +12,7 @@ type AddGridAsPlaylistButtonProps = {
 export const AddGridAsPlaylistButton = ({
   id,
 }: AddGridAsPlaylistButtonProps) => {
-  const { mutate, isPending } = api.spotify.createPlaylistFromGrid.useMutation({
+  const { mutate, isPending } = api.grid.createPlaylistFromGrid.useMutation({
     onSuccess: () => toast.success("Playlist created successfully!"),
     onError: (error) => {
       toast.error(getErrorMessage(error));

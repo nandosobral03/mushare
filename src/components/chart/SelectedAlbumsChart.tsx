@@ -2,13 +2,9 @@ import { type Album } from "@/types/spotify";
 
 type SelectedAlbumsChartProps = {
   albums: ((Album & { index: number }) | null)[];
-  onAlbumsChange: (albums: ((Album & { index: number }) | null)[]) => void;
 };
 
-export const SelectedAlbumsChart = ({
-  albums,
-  onAlbumsChange,
-}: SelectedAlbumsChartProps) => (
+export const SelectedAlbumsChart = ({ albums }: SelectedAlbumsChartProps) => (
   <div className="w-80 border-l pl-8">
     <div className="space-y-4">
       {albums.map((album, index) => (

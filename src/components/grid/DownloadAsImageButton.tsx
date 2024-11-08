@@ -4,7 +4,7 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
 const DownloadAsImageButton = ({ gridId }: { gridId: string }) => {
-  const { data } = api.spotify.getGrid.useQuery({ id: gridId });
+  const { data } = api.grid.getGrid.useQuery({ id: gridId });
 
   const downloadImage = () => {
     if (!data) return;

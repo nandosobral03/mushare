@@ -110,6 +110,11 @@ export const chartRouter = createTRPCRouter({
         },
       });
 
+      await ctx.db.grid.update({
+        where: { id: input.id },
+        data: { savedCount: { increment: 1 } },
+      });
+
       if (!chart) {
         throw new TRPCError({
           code: "NOT_FOUND",

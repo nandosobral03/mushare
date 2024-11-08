@@ -42,6 +42,7 @@ export const ChartList = ({
       <Reorder.Group
         axis="y"
         values={albums}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onReorder={onReorder ?? (() => {})}
         className="space-y-4"
         style={{ position: "relative" }}
@@ -67,6 +68,7 @@ export const ChartList = ({
               <span className="min-w-[2.5rem] text-2xl font-semibold text-spotify">
                 #{album.index + 1}
               </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={album.imageUrl ?? ""}
                 alt={album.name}
