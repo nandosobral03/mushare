@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { ChartList } from "@/components/chart/ChartList";
 import ShareButton from "@/components/grid/ShareButton";
 import { AddChartAsPlaylistButton } from "@/components/chart/AddChartAsPlaylistButton";
+import { LikeChart } from "./like-chart";
 
 type ChartPageProps = {
   params: Promise<{
@@ -17,6 +18,10 @@ const ChartPage = async ({ params }: ChartPageProps) => {
   if (!chart) {
     notFound();
   }
+
+  const isLiked = await api.likes.getChartLikeStatus({
+    chartId: resolvedParams.id,
+  });
 
   return (
     <>
@@ -33,6 +38,7 @@ const ChartPage = async ({ params }: ChartPageProps) => {
           <div className="flex gap-4">
             <AddChartAsPlaylistButton id={chart.id} />
             <ShareButton gridId={chart.id} />
+            <LikeChart chartId={chart.id} initialIsLiked={isLiked} />
           </div>
           <ChartList
             albums={chart.albums.map((album, index) => ({

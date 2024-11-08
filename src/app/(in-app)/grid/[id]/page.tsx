@@ -7,6 +7,8 @@ import { SelectedAlbums } from "@/components/grid/SelectedAlbums";
 import ShareButton from "@/components/grid/ShareButton";
 import DownloadAsImageButton from "@/components/grid/DownloadAsImageButton";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
+import { LikeGrid } from "./like-grid";
+// import { LikeButton } from "~/components/ui/LikeButton";
 
 type GridPageProps = {
   params: Promise<{
@@ -20,6 +22,10 @@ const GridPage = async ({ params }: GridPageProps) => {
   if (!grid) {
     notFound();
   }
+
+  const isLiked = await api.likes.getGridLikeStatus({
+    gridId: resolvedParams.id,
+  });
 
   return (
     <>
@@ -44,6 +50,7 @@ const GridPage = async ({ params }: GridPageProps) => {
                 readonly
               />
               <div className="mt-4 flex gap-4">
+                <LikeGrid gridId={grid.id} initialIsLiked={isLiked} />
                 <AddGridAsPlaylistButton id={grid.id} />
                 <ShareButton gridId={grid.id} />
                 <DownloadAsImageButton gridId={grid.id} />

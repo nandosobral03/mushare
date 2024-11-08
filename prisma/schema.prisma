@@ -18,6 +18,9 @@ model SpotifyUser {
 
   grids  Grid[]
   charts Chart[]
+
+  gridLikes GridLike[]
+  chartLikes ChartLike[]
 }
 
 model Grid {
@@ -29,6 +32,7 @@ model Grid {
 
   albums      GridAlbum[]
   spotifyUser SpotifyUser @relation(fields: [spotifyUserId], references: [spotifyId])
+  likes     GridLike[]
 }
 
 model GridAlbum {
@@ -62,6 +66,7 @@ model Chart {
   albums        ChartAlbum[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+  likes     ChartLike[]
 
   @@index([spotifyUserId])
 }
@@ -82,4 +87,26 @@ model SearchCache {
   key       String @id
   value     String
   timestamp BigInt
+}
+
+model GridLike {
+    id        String   @id @default(cuid())
+    userId    String
+    gridId    String
+  createdAt DateTime @default(now())
+  user      SpotifyUser @relation(fields: [userId], references: [spotifyId], onDelete: Cascade)
+  grid      Grid        @relation(fields: [gridId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, gridId])
+}
+
+model ChartLike {
+    id        String   @id @default(cuid())
+    userId    String
+    chartId   String
+  createdAt DateTime @default(now())
+  user      SpotifyUser @relation(fields: [userId], references: [spotifyId], onDelete: Cascade)
+  chart     Chart       @relation(fields: [chartId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, chartId])
 }
