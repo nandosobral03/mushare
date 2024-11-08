@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "sonner";
+import { SignUpModal } from "@/components/modals/SignUpModal";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -21,6 +22,7 @@ export default function RootLayout({
         <TRPCReactProvider>
           <Toaster />
           {children}
+          <SignUpModal />
         </TRPCReactProvider>
       </body>
     </html>

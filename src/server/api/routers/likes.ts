@@ -1,6 +1,11 @@
 import { z } from "zod";
-import { createTRPCRouter, spotifyProtectedProcedure } from "../trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  spotifyProtectedProcedure,
+} from "../trpc";
 import { getUserId } from "@/lib/spotify";
+import { cookies } from "next/headers";
 
 export const likesRouter = createTRPCRouter({
   toggleGridLike: spotifyProtectedProcedure
@@ -61,10 +66,16 @@ export const likesRouter = createTRPCRouter({
       return true;
     }),
 
-  getGridLikeStatus: spotifyProtectedProcedure
+  getGridLikeStatus: publicProcedure
     .input(z.object({ gridId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const userId = await getUserId(ctx.spotifyAccessToken);
+      const cookie = await cookies();
+      const spotifyAccessToken = cookie.get("spotify_access_token")?.value;
+      if (!spotifyAccessToken) {
+        return false;
+      }
+
+      const userId = await getUserId(spotifyAccessToken);
       const like = await ctx.db.gridLike.findUnique({
         where: {
           userId_gridId: {
@@ -76,10 +87,15 @@ export const likesRouter = createTRPCRouter({
       return !!like;
     }),
 
-  getChartLikeStatus: spotifyProtectedProcedure
+  getChartLikeStatus: publicProcedure
     .input(z.object({ chartId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const userId = await getUserId(ctx.spotifyAccessToken);
+      const cookie = await cookies();
+      const spotifyAccessToken = cookie.get("spotify_access_token")?.value;
+      if (!spotifyAccessToken) {
+        return false;
+      }
+      const userId = await getUserId(spotifyAccessToken);
       const like = await ctx.db.chartLike.findUnique({
         where: {
           userId_chartId: {

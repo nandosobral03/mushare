@@ -22,6 +22,9 @@ export const Navbar = () => {
         <Link href="/chart" className="flex items-center gap-2">
           <span className={getNavItemClass("/chart")}>view_list</span>
         </Link>
+        <Link href="/trending" className="flex items-center gap-2">
+          <span className={getNavItemClass("/trending")}>trending_up</span>
+        </Link>
         <Link href="/profile" className="flex items-center gap-2">
           <span className={getNavItemClass("/profile")}>person</span>
         </Link>
