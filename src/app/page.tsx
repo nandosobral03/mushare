@@ -1,13 +1,20 @@
 import { SignInWithSpotify } from "@/components/SignInWithSpotify";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-black via-spotify-900 to-spotify-800">
       <nav className="flex items-center justify-between p-6">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-spotify">album</span>
+          <Image
+            src="/32x32.png"
+            alt="Mushare logo"
+            className="h-8 w-8"
+            height={32}
+            width={32}
+          />
           <span className="text-xl font-bold text-white">Mushare</span>
         </div>
       </nav>

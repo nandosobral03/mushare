@@ -4,6 +4,7 @@ import { useSession } from "@/hooks/useSession";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSignUpModal } from "@/hooks/useSignUpModal";
+import Image from "next/image";
 
 export const Navbar = () => {
   const pathname = usePathname();
@@ -20,7 +21,11 @@ export const Navbar = () => {
 
   return (
     <nav className="flex h-full flex-col justify-between p-4">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col items-center gap-2">
+        <Link href="/">
+          <Image src="/32x32.png" alt="Mushare logo" width={32} height={32} />
+        </Link>
+        <span className="my-2 h-px w-full bg-background" />
         <Link href="/grid" className="flex items-center gap-2">
           <span className={getNavItemClass("/grid")}>apps</span>
         </Link>
