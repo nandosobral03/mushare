@@ -3,6 +3,7 @@ import { useState } from "react";
 import { type Album } from "@/types/spotify";
 import { AlbumGrid } from "./AlbumGrid";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 type SaveGridDialogProps = {
   open: boolean;
@@ -43,13 +44,22 @@ const SaveGridDialog = ({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <button
+          <Button
             onClick={() => onConfirm(title)}
             disabled={isLoading || !title.trim()}
-            className="w-full rounded-full bg-spotify px-8 py-3 font-semibold text-white hover:bg-spotify/90 disabled:opacity-50"
+            className="w-full"
           >
-            {isLoading ? "Saving..." : "Save Grid"}
-          </button>
+            {isLoading ? (
+              <>
+                <span className="material-symbols-outlined mr-2 animate-spin">
+                  progress_activity
+                </span>
+                Saving...
+              </>
+            ) : (
+              "Save Grid"
+            )}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

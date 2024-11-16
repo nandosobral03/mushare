@@ -32,9 +32,18 @@ export const SaveChartButton = ({
           albums,
         })
       }
-      disabled={!title || albums.length === 0}
+      disabled={!title || albums.length === 0 || createChart.isPending}
     >
-      Save Chart
+      {createChart.isPending ? (
+        <>
+          <span className="material-symbols-outlined mr-2 animate-spin">
+            progress_activity
+          </span>
+          Saving...
+        </>
+      ) : (
+        "Save Chart"
+      )}
     </Button>
   );
 };

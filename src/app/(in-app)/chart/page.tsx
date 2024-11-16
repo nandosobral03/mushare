@@ -4,9 +4,18 @@ import { Button } from "@/components/ui/button";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useRouter } from "next/navigation";
+import { useSignUpModal } from "@/hooks/useSignUpModal";
 
 const ChartsPage = () => {
   const router = useRouter();
+  const { showSignUpModalIfNeeded } = useSignUpModal();
+
+  const handleCreateChart = () => {
+    const needsSignUp = showSignUpModalIfNeeded();
+    if (!needsSignUp) {
+      router.push("/chart/create");
+    }
+  };
 
   return (
     <>
@@ -14,6 +23,7 @@ const ChartsPage = () => {
         icon="bar_chart"
         title="Album Charts"
         description="Create and share ranked lists of your favorite albums from Spotify."
+        breadcrumbs={[{ label: "Album Charts" }]}
       />
       <ContentWrapper>
         <div className="flex flex-col items-center gap-8 p-4 md:p-8">
@@ -68,7 +78,7 @@ const ChartsPage = () => {
             </div>
             <Button
               size="lg"
-              onClick={() => router.push("/chart/create")}
+              onClick={handleCreateChart}
               className="w-full gap-2 md:w-auto"
             >
               <span className="material-symbols-outlined">add</span>

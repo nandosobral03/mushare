@@ -17,6 +17,7 @@ export default function TrendingPage() {
         icon="trending_up"
         title="Trending"
         description="Discover the most popular grids and charts"
+        breadcrumbs={[{ label: "Trending" }]}
       />
       <ContentWrapper>
         <div className="mb-8 flex justify-end">

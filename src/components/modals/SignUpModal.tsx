@@ -16,7 +16,7 @@ export const SignUpModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="py-8 sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(30,215,96,0.3)]">
             Join Mushare
@@ -24,7 +24,7 @@ export const SignUpModal = () => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-8 py-6">
+        <div className="space-y-8 py-8">
           <div className="space-y-4">
             <div className="flex items-center gap-4 rounded-lg bg-black/20 p-4 transition-colors hover:bg-black/30">
               <Heart className="h-6 w-6 text-spotify-50 drop-shadow-[0_0_8px_rgba(236,72,153,0.5)]" />

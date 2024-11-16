@@ -7,7 +7,7 @@ type PageHeaderProps = {
   icon: string;
   title: string;
   description: string;
-  breadcrumbs?: BreadcrumbItem[];
+  breadcrumbs: BreadcrumbItem[];
 };
 
 export const PageHeader = ({

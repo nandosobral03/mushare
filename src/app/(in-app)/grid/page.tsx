@@ -4,9 +4,18 @@ import { Button } from "@/components/ui/button";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useRouter } from "next/navigation";
+import { useSignUpModal } from "@/hooks/useSignUpModal";
 
 const GridPage = () => {
   const router = useRouter();
+  const { showSignUpModalIfNeeded } = useSignUpModal();
+
+  const handleCreateGrid = () => {
+    const needsSignUp = showSignUpModalIfNeeded();
+    if (!needsSignUp) {
+      router.push("/grid/create");
+    }
+  };
 
   return (
     <>
@@ -14,6 +23,7 @@ const GridPage = () => {
         icon="grid_view"
         title="Album Grids"
         description="Create and share custom grids of your favorite albums from Spotify."
+        breadcrumbs={[{ label: "Grids" }]}
       />
       <ContentWrapper>
         <div className="flex flex-col items-center gap-8 p-4 md:p-8">
@@ -69,7 +79,7 @@ const GridPage = () => {
             </div>
             <Button
               size="lg"
-              onClick={() => router.push("/grid/create")}
+              onClick={handleCreateGrid}
               className="w-full gap-2 md:w-auto"
             >
               <span className="material-symbols-outlined">add</span>

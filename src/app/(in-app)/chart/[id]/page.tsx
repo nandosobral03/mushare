@@ -32,6 +32,10 @@ const ChartPage = async ({ params }: ChartPageProps) => {
           chart.description ||
           `Created on ${chart.createdAt.toLocaleDateString()}`
         }
+        breadcrumbs={[
+          { label: "Charts", href: "/chart" },
+          { label: chart.title },
+        ]}
       />
       <div className="flex flex-col items-center gap-4">
         <div className="flex w-full max-w-5xl flex-col items-center gap-4">

@@ -1,4 +1,6 @@
 import { SignInWithSpotify } from "@/components/SignInWithSpotify";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -24,7 +26,9 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col items-center gap-6">
-          <SignInWithSpotify />
+          <Button size="lg" asChild>
+            <Link href="/grid">Get Started</Link>
+          </Button>
           <div className="mt-4 flex flex-wrap justify-center gap-8">
             <Feature icon="grid_view" text="Create Album Grids" />
             <Feature icon="format_list_numbered" text="Make Top Charts" />

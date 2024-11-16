@@ -78,7 +78,7 @@ export const ChartList = ({
               />
               <div className="flex-grow">
                 <h3 className="font-semibold text-white">{album.name}</h3>
-                <p className="text-primary-foreground">{album.artist}</p>
+                <p className="text-foreground/50">{album.artist}</p>
               </div>
               {!readonly && (
                 <button

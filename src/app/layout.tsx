@@ -6,6 +6,8 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "@/trpc/react";
 import { Toaster } from "sonner";
 import { SignUpModal } from "@/components/modals/SignUpModal";
+import { LoadingBar } from "@/components/loading-bar";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -21,6 +23,7 @@ export default function RootLayout({
       <body>
         <TRPCReactProvider>
           <Toaster />
+          <NextTopLoader color="#1DB954" />
           {children}
           <SignUpModal />
         </TRPCReactProvider>

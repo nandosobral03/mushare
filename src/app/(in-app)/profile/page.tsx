@@ -33,7 +33,6 @@ export default async function ProfilePage() {
 
   if (!session) {
     redirect("/");
-    return null;
   }
 
   return (
@@ -42,6 +41,7 @@ export default async function ProfilePage() {
         title="Profile"
         icon="person"
         description="View your creations"
+        breadcrumbs={[{ label: "Profile" }]}
       />
       <ContentWrapper>
         <div className="flex items-center gap-2">

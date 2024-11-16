@@ -32,6 +32,15 @@ const GridPage = async ({ params }: GridPageProps) => {
         icon="grid_view"
         title={grid.title}
         description={`Created on ${grid.createdAt.toLocaleDateString()} by ${grid.spotifyUserId}`}
+        breadcrumbs={[
+          {
+            label: "Grids",
+            href: "/grid",
+          },
+          {
+            label: grid.title,
+          },
+        ]}
       />
       <ContentWrapper>
         <div className="flex h-full w-full items-center justify-center">
