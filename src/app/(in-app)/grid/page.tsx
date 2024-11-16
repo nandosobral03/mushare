@@ -1,145 +1,83 @@
 "use client";
 
-import { useState } from "react";
-import { AlbumGrid } from "@/components/grid/AlbumGrid";
-import { SelectedAlbums } from "@/components/grid/SelectedAlbums";
-import SaveGridDialog from "@/components/grid/SaveGridDialog";
-import { type Album } from "@/types/spotify";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { api } from "@/trpc/react";
-import { toast } from "sonner";
-import { getErrorMessage } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { ContentWrapper } from "@/components/ui/ContentWrapper";
 import { Button } from "@/components/ui/button";
+import { ContentWrapper } from "@/components/ui/ContentWrapper";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { useRouter } from "next/navigation";
 
 const GridPage = () => {
-  const [gridSize, setGridSize] = useState(3);
-  const [selectedAlbums, setSelectedAlbums] = useState<
-    ((Album & { position: number }) | null)[]
-  >([]);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
   const router = useRouter();
-
-  const createGrid = api.grid.createGrid.useMutation({
-    onSuccess: (grid) => {
-      setShowSaveDialog(false);
-      void router.push(`/grid/${grid.id}`);
-      toast.success("Grid saved successfully!");
-    },
-    onError: (error) => {
-      toast.error("Failed to create grid", {
-        description: getErrorMessage(error),
-      });
-    },
-  });
-
-  const handleSave = async (title: string) => {
-    try {
-      await createGrid.mutateAsync({
-        size: gridSize,
-        albums: selectedAlbums.slice(0, gridSize * gridSize),
-        title,
-      });
-    } catch {
-      // Error is handled by onError callback
-    }
-  };
-
-  const isGridComplete =
-    selectedAlbums
-      .slice(0, gridSize * gridSize)
-      .filter((album) => album !== null).length ===
-    gridSize * gridSize;
 
   return (
     <>
       <PageHeader
         icon="grid_view"
-        title="Create Grid"
-        description="Create your own album grid by selecting albums from your Spotify library."
+        title="Album Grids"
+        description="Create and share custom grids of your favorite albums from Spotify."
       />
       <ContentWrapper>
-        <div className="flex w-full grow gap-8 p-8">
-          <div className="flex w-2/3 flex-col items-center justify-stretch">
-            <div className="mb-8 flex items-center gap-4 rounded-lg p-4">
-              <div className="relative w-24">
-                <input
-                  id="gridSize"
-                  min={2}
-                  max={6}
-                  value={gridSize}
-                  onChange={(e) =>
-                    setGridSize(
-                      Math.min(Math.max(Number(e.target.value), 2), 6),
-                    )
-                  }
-                  className="w-full rounded-md bg-black p-3 text-center text-lg text-white outline-none focus:border-spotify focus:outline-none focus:ring-2 focus:ring-spotify"
-                />
-                <div className="absolute right-2 top-0 flex h-full flex-col justify-center">
-                  <button
-                    onClick={() => setGridSize(Math.min(gridSize + 1, 6))}
-                    className="text-spotify hover:text-white"
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      expand_less
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => setGridSize(Math.max(gridSize - 1, 2))}
-                    className="text-spotify hover:text-white"
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      expand_more
-                    </span>
-                  </button>
-                </div>
+        <div className="flex flex-col items-center gap-8 p-4 md:p-8">
+          <div className="max-w-2xl text-center">
+            <h2 className="mb-4 text-xl font-bold text-white md:text-2xl">
+              What are Album Grids?
+            </h2>
+            <p className="mb-6 text-sm text-muted-foreground md:text-base">
+              Album Grids let you show off a select number of your favorite
+              albums in a custom sharable grid. Show off how much of a music
+              nerd you are by selecting the best albums in a given genre, or
+              simply throw together a grid of your favorite albums.
+            </p>
+            <div className="mb-8 grid grid-cols-1 gap-4 text-left md:grid-cols-3 md:gap-6">
+              <div className="rounded-lg bg-secondary p-4">
+                <span className="material-symbols-outlined mb-2 text-spotify">
+                  add_circle
+                </span>
+                <h3 className="mb-2 text-sm font-semibold text-white md:text-base">
+                  Create
+                </h3>
+                <p className="text-xs text-muted-foreground md:text-sm">
+                  Build custom grids by selecting albums from your Spotify
+                  library. Choose the perfect size to showcase your collection.
+                </p>
+              </div>
+              <div className="rounded-lg bg-secondary p-4">
+                <span className="material-symbols-outlined mb-2 text-spotify">
+                  share
+                </span>
+                <h3 className="mb-2 text-sm font-semibold text-white md:text-base">
+                  Share
+                </h3>
+                <p className="text-xs text-muted-foreground md:text-sm">
+                  Share your grids with friends, download the grid as an image
+                  and share it wherever you like to show off your musical taste.
+                </p>
+              </div>
+              <div className="rounded-lg bg-secondary p-4">
+                <span className="material-symbols-outlined mb-2 text-spotify">
+                  playlist_add
+                </span>
+                <h3 className="mb-2 text-sm font-semibold text-white md:text-base">
+                  Explore
+                </h3>
+                <p className="text-xs text-muted-foreground md:text-sm">
+                  Explore grids created by others and see how they've showcased
+                  their musical tastes. If something catches your eye, add the
+                  grid as a playlist to your Spotify library and give it a
+                  listen.
+                </p>
               </div>
             </div>
-            <AlbumGrid
-              size={gridSize}
-              selectedAlbums={selectedAlbums}
-              onAlbumSelect={(album, position) => {
-                if (album) {
-                  const newAlbums = [...selectedAlbums];
-                  newAlbums[position] = album;
-                  setSelectedAlbums(newAlbums);
-                } else {
-                  const newAlbums = [...selectedAlbums] as (
-                    | (Album & { position: number })
-                    | null
-                  )[];
-                  newAlbums[position] = null;
-                  setSelectedAlbums(newAlbums);
-                }
-              }}
-            />
             <Button
-              onClick={() => setShowSaveDialog(true)}
-              disabled={!isGridComplete}
-              className="mt-8"
               size="lg"
+              onClick={() => router.push("/grid/create")}
+              className="w-full gap-2 md:w-auto"
             >
-              Save Grid
+              <span className="material-symbols-outlined">add</span>
+              Create Your First Grid
             </Button>
           </div>
-          <SelectedAlbums
-            albums={Array.from({ length: gridSize * gridSize }, (_, index) =>
-              selectedAlbums[index]
-                ? { ...selectedAlbums[index], index }
-                : null,
-            )}
-          />
         </div>
       </ContentWrapper>
-      <SaveGridDialog
-        open={showSaveDialog}
-        onOpenChange={setShowSaveDialog}
-        onConfirm={handleSave}
-        gridSize={gridSize}
-        selectedAlbums={selectedAlbums}
-        isLoading={createGrid.isPending}
-      />
     </>
   );
 };

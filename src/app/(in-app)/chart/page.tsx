@@ -1,112 +1,84 @@
 "use client";
-import { useState } from "react";
-import { type Album } from "@/types/spotify";
-import { ChartList } from "@/components/chart/ChartList";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { SaveChartButton } from "@/components/chart/SaveChartButton";
+
 import { Button } from "@/components/ui/button";
-import { AlbumSelector } from "@/components/grid/AlbumSelector";
-import { AnimatePresence } from "framer-motion";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { useRouter } from "next/navigation";
 
-export default function ChartPage() {
-  const [selectedAlbums, setSelectedAlbums] = useState<
-    ((Album & { index: number }) | null)[]
-  >([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [isAlbumSelectorOpen, setIsAlbumSelectorOpen] = useState(false);
-
-  const addNewAlbum = (album: Album) => {
-    if (selectedAlbums.some((existing) => existing?.id === album.id)) {
-      return;
-    }
-
-    setSelectedAlbums((prev) => [...prev, { ...album, index: prev.length }]);
-    setIsAlbumSelectorOpen(false);
-  };
-
-  const handleReorder = (newOrder: (Album & { index: number })[]) => {
-    const reindexedAlbums = newOrder.map((album, idx) => ({
-      ...album,
-      index: idx,
-    }));
-    setSelectedAlbums(reindexedAlbums);
-  };
-
-  const handleRemove = (albumToRemove: Album & { index: number }) => {
-    setSelectedAlbums((prev) =>
-      prev
-        .filter((album) => album?.id !== albumToRemove.id)
-        .map((album, idx) => (album ? { ...album, index: idx } : null)),
-    );
-  };
+const ChartsPage = () => {
+  const router = useRouter();
 
   return (
     <>
       <PageHeader
-        icon="view_list"
-        title="Create Chart"
-        description="Create your own album chart by selecting and ranking albums"
+        icon="bar_chart"
+        title="Album Charts"
+        description="Create and share ranked lists of your favorite albums from Spotify."
       />
       <ContentWrapper>
-        <div className="flex grow flex-col items-center justify-stretch gap-8">
-          <div className="w-full max-w-5xl space-y-2">
-            <div className="space-y-4 rounded-lg p-6">
-              <Input
-                placeholder="Chart Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="h-auto border-2 bg-transparent p-4 text-2xl font-bold text-white focus:border-gray-500"
-              />
-              <Textarea
-                placeholder="Chart Description (optional)"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[100px] resize-y border-2 bg-transparent p-4 text-white focus:border-gray-500"
-              />
+        <div className="flex flex-col items-center gap-8 p-4 md:p-8">
+          <div className="max-w-2xl text-center">
+            <h2 className="mb-4 text-xl font-bold text-white md:text-2xl">
+              What are Album Charts?
+            </h2>
+            <p className="mb-6 text-sm text-muted-foreground md:text-base">
+              Album Charts let you create ranked lists of your favorite albums.
+              Whether you want to showcase your top albums of all time, rank
+              albums from a specific artist, or create a themed chart - the
+              possibilities are endless.
+            </p>
+            <div className="mb-8 grid grid-cols-1 gap-4 text-left md:grid-cols-3 md:gap-6">
+              <div className="rounded-lg bg-secondary p-4">
+                <span className="material-symbols-outlined mb-2 text-spotify">
+                  format_list_numbered
+                </span>
+                <h3 className="mb-2 text-sm font-semibold text-white md:text-base">
+                  Rank
+                </h3>
+                <p className="text-xs text-muted-foreground md:text-sm">
+                  Create ranked lists of albums from your Spotify library. Drag
+                  and drop to arrange them in your preferred order.
+                </p>
+              </div>
+              <div className="rounded-lg bg-secondary p-4">
+                <span className="material-symbols-outlined mb-2 text-spotify">
+                  share
+                </span>
+                <h3 className="mb-2 text-sm font-semibold text-white md:text-base">
+                  Share
+                </h3>
+                <p className="text-xs text-muted-foreground md:text-sm">
+                  Share your charts with friends, download them as images, and
+                  showcase your musical rankings wherever you like.
+                </p>
+              </div>
+              <div className="rounded-lg bg-secondary p-4">
+                <span className="material-symbols-outlined mb-2 text-spotify">
+                  playlist_add
+                </span>
+                <h3 className="mb-2 text-sm font-semibold text-white md:text-base">
+                  Listen
+                </h3>
+                <p className="text-xs text-muted-foreground md:text-sm">
+                  Turn any chart into a Spotify playlist with a single click.
+                  Discover new music through other users' rankings and add them
+                  to your library.
+                </p>
+              </div>
             </div>
-
-            <AnimatePresence>
-              <ChartList
-                albums={
-                  selectedAlbums.filter(Boolean) as (Album & {
-                    index: number;
-                  })[]
-                }
-                onReorder={handleReorder}
-                onRemove={handleRemove}
-              />
-            </AnimatePresence>
-
             <Button
-              onClick={() => setIsAlbumSelectorOpen(true)}
-              className="mt-4 h-12 w-full border-2 border-dashed border-spotify bg-transparent text-spotify hover:bg-spotify hover:text-white"
-              variant="outline"
+              size="lg"
+              onClick={() => router.push("/chart/create")}
+              className="w-full gap-2 md:w-auto"
             >
-              Add Album
+              <span className="material-symbols-outlined">add</span>
+              Create Your First Chart
             </Button>
-
-            <div className="flex justify-end">
-              <SaveChartButton
-                title={title}
-                description={description}
-                albums={selectedAlbums.filter(Boolean) as Album[]}
-              />
-            </div>
           </div>
-          <AlbumSelector
-            isOpen={isAlbumSelectorOpen}
-            onClose={() => setIsAlbumSelectorOpen(false)}
-            onSelect={addNewAlbum}
-            selectedAlbumIds={selectedAlbums
-              .filter(Boolean)
-              .map((album) => (album as Album).id)}
-          />
         </div>
       </ContentWrapper>
     </>
   );
-}
+};
+
+export default ChartsPage;

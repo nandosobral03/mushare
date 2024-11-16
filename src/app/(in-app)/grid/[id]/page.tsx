@@ -8,7 +8,6 @@ import ShareButton from "@/components/grid/ShareButton";
 import DownloadAsImageButton from "@/components/grid/DownloadAsImageButton";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
 import { LikeGrid } from "./like-grid";
-// import { LikeButton } from "~/components/ui/LikeButton";
 
 type GridPageProps = {
   params: Promise<{
