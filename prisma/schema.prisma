@@ -57,7 +57,6 @@ model Album {
   imageUrl    String
   grids       GridAlbum[]
   chartAlbums ChartAlbum[]
-  savedCount  Int          @default(0)
 }
 
 model Chart {
