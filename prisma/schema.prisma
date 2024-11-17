@@ -25,7 +25,8 @@ model SpotifyUser {
 
 model Grid {
   id            String   @id @default(cuid())
-  size          Int
+  height        Int
+  width         Int
   spotifyUserId String
   createdAt     DateTime @default(now())
   title         String

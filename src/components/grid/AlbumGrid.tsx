@@ -5,7 +5,8 @@ import { type Album } from "@/types/spotify";
 import { AlbumSelector } from "./AlbumSelector";
 
 type AlbumGridProps = {
-  size: number;
+  width: number;
+  height: number;
   selectedAlbums: ((Album & { position: number }) | null)[];
   onAlbumSelect?: (
     album: (Album & { position: number }) | null,
@@ -15,20 +16,22 @@ type AlbumGridProps = {
 };
 
 export const AlbumGrid = ({
-  size,
+  width,
+  height,
   selectedAlbums,
   onAlbumSelect,
   readonly = false,
 }: AlbumGridProps) => {
   const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
-  const gridCells = Array.from({ length: size * size }, (_, i) => i);
+  const gridCells = Array.from({ length: width * height }, (_, i) => i);
 
   return (
     <>
       <div
-        className="mx-auto grid aspect-square w-full gap-4"
+        className="mx-auto grid w-full gap-4"
         style={{
-          gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${width}, minmax(0, 1fr))`,
+          aspectRatio: `${width}/${height}`,
           maxWidth: readonly
             ? undefined
             : "min(calc(100vh - 32rem), calc(100vw - 32rem))",

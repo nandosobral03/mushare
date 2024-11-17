@@ -9,7 +9,8 @@ type SaveGridDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (title: string) => void;
-  gridSize: number;
+  gridHeight: number;
+  gridWidth: number;
   selectedAlbums: (Album | null)[];
   isLoading: boolean;
 };
@@ -18,7 +19,8 @@ const SaveGridDialog = ({
   open,
   onOpenChange,
   onConfirm,
-  gridSize,
+  gridHeight,
+  gridWidth,
   selectedAlbums,
   isLoading,
 }: SaveGridDialogProps) => {
@@ -31,13 +33,16 @@ const SaveGridDialog = ({
           <DialogTitle>Save Your Grid</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center gap-6">
-          <AlbumGrid
-            size={gridSize}
-            selectedAlbums={selectedAlbums.map((album, i) =>
-              album ? { ...album, position: i } : null,
-            )}
-            readonly
-          />
+          <div className="max-h-[300px] w-full overflow-y-auto">
+            <AlbumGrid
+              height={gridHeight}
+              width={gridWidth}
+              selectedAlbums={selectedAlbums.map((album, i) =>
+                album ? { ...album, position: i } : null,
+              )}
+              readonly
+            />
+          </div>
           <Input
             type="text"
             placeholder="Enter grid title..."

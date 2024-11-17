@@ -12,32 +12,27 @@ export const gridRouter = createTRPCRouter({
     .input(
       z
         .object({
-          size: z
+          width: z
             .number({
-              required_error: "Grid size is required",
-              invalid_type_error: "Grid size must be a number",
+              required_error: "Grid width is required",
+              invalid_type_error: "Grid width must be a number",
             })
-            .min(2, "Grid size must be at least 2")
-            .max(6, "Grid size cannot be larger than 5"),
+            .min(2, "Grid width must be at least 2")
+            .max(6, "Grid width cannot be larger than 6"),
+          height: z
+            .number({
+              required_error: "Grid height is required",
+              invalid_type_error: "Grid height must be a number",
+            })
+            .min(2, "Grid height must be at least 2")
+            .max(12, "Grid height cannot be larger than 12"),
           albums: z.array(
             z
               .object({
-                id: z.string({
-                  required_error: "Album ID is required",
-                  invalid_type_error: "Album ID must be a string",
-                }),
-                name: z.string({
-                  required_error: "Album name is required",
-                  invalid_type_error: "Album name must be a string",
-                }),
-                artist: z.string({
-                  required_error: "Artist name is required",
-                  invalid_type_error: "Artist name must be a string",
-                }),
-                imageUrl: z.string({
-                  required_error: "Album image URL is required",
-                  invalid_type_error: "Album image URL must be a string",
-                }),
+                id: z.string(),
+                name: z.string(),
+                artist: z.string(),
+                imageUrl: z.string(),
               })
               .nullable(),
           ),
@@ -45,12 +40,11 @@ export const gridRouter = createTRPCRouter({
         })
         .refine(
           (data) =>
-            // length of albums array is size * size
-            data.albums.length === data.size * data.size &&
+            data.albums.length === data.width * data.height &&
             data.albums.every((album) => album !== null),
           {
             message:
-              "All grid positions must be filled with albums and match the grid size",
+              "All grid positions must be filled with albums and match the grid dimensions",
           },
         ),
     )
@@ -58,7 +52,8 @@ export const gridRouter = createTRPCRouter({
       const userId = await getUserId(ctx.spotifyAccessToken);
       return await ctx.db.grid.create({
         data: {
-          size: input.size,
+          width: input.width,
+          height: input.height,
           spotifyUserId: userId,
           albums: {
             create: input.albums
@@ -146,7 +141,7 @@ export const gridRouter = createTRPCRouter({
 
       return await createSpotifyPlaylistFromAlbums(
         grid.albums.map((album) => album.album.spotifyId),
-        `Mushare ${grid.size}x${grid.size} - ${grid.title} by ${grid.spotifyUser.name}`,
+        `Mushare ${grid.width}x${grid.height} - ${grid.title} by ${grid.spotifyUser.name}`,
         `Playlist created by Mushare based on the grid "${grid.title}", grid can be found at https://mushare.app/grid/${grid.id}`,
       );
     }),
