@@ -28,7 +28,7 @@ export const TrendingList = ({ dateRange }: TrendingListProps) => {
   }, [inView, hasNextPage, fetchNextPage]);
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-2 space-y-1">
       {data?.pages.map((page) =>
         page.items.map((item) => <TrendingItem key={item.id} item={item} />),
       )}

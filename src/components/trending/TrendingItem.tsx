@@ -11,7 +11,7 @@ interface TrendingItemProps {
 }
 
 export const TrendingItem = ({ item }: TrendingItemProps) => {
-  const isGrid = "size" in item;
+  const isGrid = "width" in item;
   const href = isGrid ? `/grid/${item.id}` : `/chart/${item.id}`;
 
   return (
@@ -53,7 +53,7 @@ export const TrendingItem = ({ item }: TrendingItemProps) => {
               {item._count.likes} likes
             </span>
             <span className="text-sm text-gray-400">
-              {isGrid ? `${item.size}x${item.size} Grid` : "Chart"}
+              {isGrid ? `${item.width}x${item.height} Grid` : "Chart"}
             </span>
           </div>
         </div>

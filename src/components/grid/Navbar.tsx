@@ -12,7 +12,7 @@ export const Navbar = () => {
   const getNavItemClass = (path: string) => {
     const baseClass =
       "material-symbols-outlined rounded-xl p-2 transition-colors hover:bg-black ";
-    const isActive = pathname === path;
+    const isActive = pathname.startsWith(path);
     return `${baseClass} ${isActive ? "text-spotify" : "text-black hover:text-white"}`;
   };
 

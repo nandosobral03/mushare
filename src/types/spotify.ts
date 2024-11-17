@@ -3,6 +3,7 @@ export type Album = {
   name: string;
   artist: string;
   imageUrl: string;
+  spotifyId: string;
 };
 
 export type GridPosition = number;

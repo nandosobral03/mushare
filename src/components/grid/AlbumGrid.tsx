@@ -42,7 +42,15 @@ export const AlbumGrid = ({
             key={position}
             album={selectedAlbums[position] ?? undefined}
             onSelect={() => {
-              if (readonly) return;
+              if (readonly) {
+                if (selectedAlbums[position]?.spotifyId) {
+                  window.open(
+                    `https://open.spotify.com/album/${selectedAlbums[position]!.spotifyId}`,
+                    "_blank",
+                  );
+                }
+                return;
+              }
               if (selectedAlbums[position]) {
                 onAlbumSelect?.(null, position);
               } else {
@@ -85,7 +93,7 @@ const AlbumCell = ({ album, onSelect, readonly }: AlbumCellProps) => (
     className={`aspect-square overflow-hidden rounded-sm text-spotify transition-colors ${
       album ? "" : "border"
     } ${
-      readonly
+      readonly && !album
         ? "cursor-default"
         : "cursor-pointer hover:bg-spotify-800 hover:text-white"
     }`}

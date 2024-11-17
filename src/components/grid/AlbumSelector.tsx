@@ -55,7 +55,7 @@ export const AlbumSelector = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Select an Album</DialogTitle>
         </DialogHeader>
@@ -67,39 +67,43 @@ export const AlbumSelector = ({
           />
         </div>
 
-        <div className="grid max-h-96 grid-cols-2 gap-4 overflow-y-auto">
+        <div className="max-h-96 overflow-y-auto">
           {isLoading ? (
-            <div className="col-span-2 flex justify-center py-8">
+            <div className="flex justify-center py-8">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-spotify"></div>
             </div>
           ) : (
-            results.map((album) => (
-              <button
-                key={album.id}
-                onClick={() => {
-                  onSelect(album);
-                  handleClose();
-                }}
-                disabled={selectedAlbumIds.includes(album.id)}
-                className={cn(
-                  "flex items-center gap-4 rounded-lg p-4 transition-colors",
-                  "hover:bg-spotify-800/50",
-                  selectedAlbumIds.includes(album.id) &&
-                    "cursor-not-allowed opacity-50",
-                )}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={album.imageUrl}
-                  alt={album.name}
-                  className="h-16 w-16 object-cover"
-                />
-                <div>
-                  <div className="font-medium">{album.name}</div>
-                  <div className="text-sm text-gray-600">{album.artist}</div>
-                </div>
-              </button>
-            ))
+            <div className="grid grid-cols-2 gap-4">
+              {results.map((album) => (
+                <button
+                  key={album.id}
+                  onClick={() => {
+                    onSelect(album);
+                    handleClose();
+                  }}
+                  disabled={selectedAlbumIds.includes(album.id)}
+                  className={cn(
+                    "flex items-center gap-4 rounded-lg p-4 transition-colors",
+                    "hover:bg-spotify-800/50",
+                    selectedAlbumIds.includes(album.id) &&
+                      "cursor-not-allowed opacity-50",
+                  )}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={album.imageUrl}
+                    alt={album.name}
+                    className="h-16 w-16 object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium">{album.name}</div>
+                    <div className="truncate text-sm text-gray-600">
+                      {album.artist}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
           )}
         </div>
       </DialogContent>
