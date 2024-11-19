@@ -42,11 +42,13 @@ export const Navbar = () => {
         )}
       </div>
       {isAuthenticated ? (
-        <Link href="/api/auth/signout" className="flex items-center gap-2">
-          <span className="material-symbols-outlined rounded-xl p-2 text-black transition-colors hover:bg-black hover:text-white">
-            logout
-          </span>
-        </Link>
+        <form action="/api/auth/signout" method="POST">
+          <button type="submit" className="flex items-center gap-2">
+            <span className="material-symbols-outlined rounded-xl p-2 text-black transition-colors hover:bg-black hover:text-white">
+              logout
+            </span>
+          </button>
+        </form>
       ) : (
         <button
           onClick={() => showSignUpModalIfNeeded()}
