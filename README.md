@@ -1,6 +1,7 @@
 # Mushare
 
-Mushare is a web application that lets you create and share beautiful visualizations of your Spotify music taste. Create album grids, ranked charts, and share your musical journey with friends.
+Mushare is a web application that lets you create and share beautiful visualizations of your Spotify music taste. Create album grids, ranked charts, and share your them with your friends.
+![image](https://github.com/user-attachments/assets/bff46f6d-ad5f-47f6-a698-4633c27dceb0)
 
 ## Features
 
