@@ -62,7 +62,7 @@ CREATE TABLE "ChartAlbum" (
 CREATE TABLE "SearchCache" (
     "key" TEXT NOT NULL PRIMARY KEY,
     "value" TEXT NOT NULL,
-    "timestamp" BIGINT NOT NULL
+    "timestamp" DATETIME NOT NULL
 );
 
 -- CreateTable

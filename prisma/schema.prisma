@@ -91,7 +91,7 @@ model ChartAlbum {
 model SearchCache {
   key       String @id
   value     String
-  timestamp BigInt
+  timestamp DateTime
 }
 
 model GridLike {
