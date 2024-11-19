@@ -22,7 +22,7 @@ export const spotifyRouter = createTRPCRouter({
         void ctx.db.searchCache.deleteMany({
           where: {
             timestamp: {
-              lt: Date.now() - CACHE_TTL,
+              lt: new Date(Date.now() - CACHE_TTL),
             },
           },
         });
@@ -47,11 +47,11 @@ export const spotifyRouter = createTRPCRouter({
         create: {
           key: cacheKey,
           value: JSON.stringify(results),
-          timestamp: Math.floor(Date.now()),
+          timestamp: new Date(),
         },
         update: {
           value: JSON.stringify(results),
-          timestamp: Math.floor(Date.now()),
+          timestamp: new Date(),
         },
       });
 
