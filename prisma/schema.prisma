@@ -3,7 +3,10 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
+
+
 
 datasource db {
   provider = "sqlite"
@@ -19,7 +22,7 @@ model SpotifyUser {
   grids  Grid[]
   charts Chart[]
 
-  gridLikes GridLike[]
+  gridLikes  GridLike[]
   chartLikes ChartLike[]
 }
 
@@ -33,8 +36,8 @@ model Grid {
 
   albums      GridAlbum[]
   spotifyUser SpotifyUser @relation(fields: [spotifyUserId], references: [spotifyId])
-  likes     GridLike[]
-  savedCount Int      @default(0)
+  likes       GridLike[]
+  savedCount  Int         @default(0)
 }
 
 model GridAlbum {
@@ -92,10 +95,10 @@ model SearchCache {
 }
 
 model GridLike {
-    id        String   @id @default(cuid())
-    userId    String
-    gridId    String
-  createdAt DateTime @default(now())
+  id        String      @id @default(cuid())
+  userId    String
+  gridId    String
+  createdAt DateTime    @default(now())
   user      SpotifyUser @relation(fields: [userId], references: [spotifyId], onDelete: Cascade)
   grid      Grid        @relation(fields: [gridId], references: [id], onDelete: Cascade)
 
@@ -103,10 +106,10 @@ model GridLike {
 }
 
 model ChartLike {
-    id        String   @id @default(cuid())
-    userId    String
-    chartId   String
-  createdAt DateTime @default(now())
+  id        String      @id @default(cuid())
+  userId    String
+  chartId   String
+  createdAt DateTime    @default(now())
   user      SpotifyUser @relation(fields: [userId], references: [spotifyId], onDelete: Cascade)
   chart     Chart       @relation(fields: [chartId], references: [id], onDelete: Cascade)
 

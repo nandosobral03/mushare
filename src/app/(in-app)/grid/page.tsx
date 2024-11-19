@@ -70,10 +70,10 @@ const GridPage = () => {
                   Explore
                 </h3>
                 <p className="text-xs text-muted-foreground md:text-sm">
-                  Explore grids created by others and see how they've showcased
-                  their musical tastes. If something catches your eye, add the
-                  grid as a playlist to your Spotify library and give it a
-                  listen.
+                  Explore grids created by others and see how they&apos;ve
+                  showcased their musical tastes. If something catches your
+                  eye, add the grid as a playlist to your Spotify library and give
+                  it a listen.
                 </p>
               </div>
             </div>

@@ -45,7 +45,7 @@ export const AlbumGrid = ({
               if (readonly) {
                 if (selectedAlbums[position]?.spotifyId) {
                   window.open(
-                    `https://open.spotify.com/album/${selectedAlbums[position]!.spotifyId}`,
+                    `https://open.spotify.com/album/${selectedAlbums[position].spotifyId}`,
                     "_blank",
                   );
                 }

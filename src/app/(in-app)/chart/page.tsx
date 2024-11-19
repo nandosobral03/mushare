@@ -71,7 +71,7 @@ const ChartsPage = () => {
                 </h3>
                 <p className="text-xs text-muted-foreground md:text-sm">
                   Turn any chart into a Spotify playlist with a single click.
-                  Discover new music through other users' rankings and add them
+                  Discover new music through other users&apos; rankings and add them
                   to your library.
                 </p>
               </div>

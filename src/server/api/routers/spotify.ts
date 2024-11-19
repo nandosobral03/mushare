@@ -3,6 +3,9 @@ import { getUserId, searchSpotifyAlbums } from "@/lib/spotify";
 import { z } from "zod";
 import type { Album } from "@/types/spotify";
 
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+const CLEANUP_PROBABILITY = 0.1; // 10% chance of cleanup per request
+
 export const spotifyRouter = createTRPCRouter({
   searchAlbums: spotifyProtectedProcedure
     .input(
@@ -14,6 +17,17 @@ export const spotifyRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input, ctx }) => {
+      // Random cleanup of old cache entries
+      if (Math.random() < CLEANUP_PROBABILITY) {
+        void ctx.db.searchCache.deleteMany({
+          where: {
+            timestamp: {
+              lt: Date.now() - CACHE_TTL,
+            },
+          },
+        });
+      }
+
       const cacheKey = `spotify-search:${input.query}`;
       const cached = await ctx.db.searchCache.findUnique({
         where: { key: cacheKey },

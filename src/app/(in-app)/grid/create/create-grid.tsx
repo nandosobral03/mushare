@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
 import { Button } from "@/components/ui/button";
 

@@ -69,21 +69,21 @@ export async function GET(request: NextRequest) {
 
     response.cookies.set("spotify_access_token", data.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      // secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: data.expires_in,
     });
 
     response.cookies.set("spotify_token_expires_at", expiresAt.toString(), {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      // secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });
 
     if (data.refresh_token) {
       response.cookies.set("spotify_refresh_token", data.refresh_token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        // secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
       });
     }

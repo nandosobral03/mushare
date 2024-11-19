@@ -10,8 +10,6 @@ import { AlbumSelector } from "@/components/grid/AlbumSelector";
 import { AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ContentWrapper } from "@/components/ui/ContentWrapper";
-import { useSession } from "@/hooks/useSession";
-import { redirect } from "next/navigation";
 
 export default function CreateChart() {
   const [selectedAlbums, setSelectedAlbums] = useState<

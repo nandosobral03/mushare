@@ -97,6 +97,7 @@ export const searchSpotifyAlbums = async (query: string): Promise<Album[]> => {
     name: item.name,
     artist: item.artists[0]?.name ?? "",
     imageUrl: item.images[0]?.url ?? "",
+    spotifyId: item.id,
   }));
 };
 

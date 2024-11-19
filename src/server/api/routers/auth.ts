@@ -1,6 +1,5 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { getUserId } from "@/lib/spotify";
-import type { Album } from "@/types/spotify";
 import { cookies } from "next/headers";
 
 export const authRouter = createTRPCRouter({

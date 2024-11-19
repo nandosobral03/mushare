@@ -1,4 +1,3 @@
-import { SignInWithSpotify } from "@/components/SignInWithSpotify";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
