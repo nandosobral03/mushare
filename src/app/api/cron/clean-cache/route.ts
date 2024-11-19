@@ -10,12 +10,10 @@ export async function GET(request: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-
     const { count } = await db.searchCache.deleteMany({
       where: {
         timestamp: {
-          lt: oneDayAgo,
+          lt: new Date(Date.now() - 24 * 60 * 60 * 1000),
         },
       },
     });
