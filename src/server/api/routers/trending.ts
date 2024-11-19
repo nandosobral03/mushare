@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { type Prisma } from "@prisma/client";
+import dayjs from "dayjs";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -21,8 +22,8 @@ export const trendingRouter = createTRPCRouter({
           : {
               gte:
                 dateRange === "weekly"
-                  ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                  : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                  ? dayjs().subtract(7, "day").toDate()
+                  : dayjs().subtract(30, "day").toDate(),
             };
 
       const [grids, charts] = await Promise.all([
