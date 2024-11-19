@@ -47,11 +47,11 @@ export const spotifyRouter = createTRPCRouter({
         create: {
           key: cacheKey,
           value: JSON.stringify(results),
-          timestamp: Date.now(),
+          timestamp: Math.floor(Date.now()),
         },
         update: {
           value: JSON.stringify(results),
-          timestamp: Date.now(),
+          timestamp: Math.floor(Date.now()),
         },
       });
 
